@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;0,400;0,700;1,100;1,400;1,500;1,600&display=swap');
+
+* {
+    padding: 0;
+    margin: 0px;
+    box-sizing: border-box;
+}
+html *::-webkit-scrollbar {
+    border-radius: 0;
+    width: 8px;
+}
+html *::-webkit-scrollbar {
+    border-radius: 0;
+    width: 8px;
+}
+html *::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.15);
+}
+html *::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.15);
+}
+html *::-webkit-scrollbar-track {
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+}
+html *::-webkit-scrollbar-track {
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+html {
+    // font-size: 62.5%;
+    height: 100vh;
+}
+
+body {
+    font-family: 'Poppins', 'sans-serif';
+    // font-size: 1.6rem;
+    // line-height: 1.5;
+    text-rendering: optimizeSpeed;
+    height: 100vh;
+    color: white;
+}
+
+input,
+button {
+    border: none;
+    outline: none;
+}
+button {
+    cursor: pointer;
+}
+
+a[href] {
+    text-decoration: none;
+}
+a[href] {
+    color: white;
+}
+
+textarea {
+    font: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+    color: white;
+}
+
+.w-container {
+    width: 96% !important;
+}

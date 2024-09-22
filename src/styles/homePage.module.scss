@@ -1,0 +1,13 @@
+.wrapper{
+    background-color: red;
+    &:hover{
+        background-color: blue;
+    }
+    button{
+        background-color: green;
+    }
+}
+
+.name{
+    font-size: 30px;
+}

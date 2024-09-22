@@ -1,11 +1,7 @@
-import { Suspense } from "react";
+import { Suspense } from 'react';
 
-function LazyLoading({children}) {
-    return (  
-        <Suspense fallback={<div>loading...</div>}>
-            {children}
-        </Suspense>
-    );
+function LazyLoading({ children }) {
+    return <Suspense fallback={<div>loading...</div>}>{children}</Suspense>;
 }
 
 export default LazyLoading;
