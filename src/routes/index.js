@@ -8,12 +8,38 @@ import Layout from '~/components/Layout';
 function AppRouter() {
     return (
         <ScrollTop>
-            <Layout>
-                <Routes>
-                    {publicPath.map((item, index) => {
-                        const Layout = item.Element;
-                        console.log(item.pathname);
-                        return (
+            <Routes>
+                {publicPath.map((item, index) => {
+                    const Layout = item.Element;
+
+                    return item?.noLayout ? (
+                        <Route
+                            key={index}
+                            path={item.pathname}
+                            element={
+                                <LazyLoading>
+                                    <Layout />
+                                </LazyLoading>
+                            }
+                        ></Route>
+                    ) : (
+                        <Route
+                            key={index}
+                            path={item.pathname}
+                            element={
+                                <Layout>
+                                    <LazyLoading>
+                                        <Layout />
+                                    </LazyLoading>
+                                </Layout>
+                            }
+                        ></Route>
+                    );
+                })}
+                {privatePath.map((item, index) => {
+                    const Layout = item.Element;
+                    return item?.noLayout ? (
+                        <Route key={index} element={<PrivateRoutes />}>
                             <Route
                                 key={index}
                                 path={item.pathname}
@@ -23,26 +49,24 @@ function AppRouter() {
                                     </LazyLoading>
                                 }
                             ></Route>
-                        );
-                    })}
-                    {privatePath.map((item, index) => {
-                        const Layout = item.Element;
-                        return (
-                            <Route key={index} element={<PrivateRoutes />}>
-                                <Route
-                                    key={index}
-                                    path={item.pathname}
-                                    element={
+                        </Route>
+                    ) : (
+                        <Route key={index} element={<PrivateRoutes />}>
+                            <Route
+                                key={index}
+                                path={item.pathname}
+                                element={
+                                    <Layout>
                                         <LazyLoading>
                                             <Layout />
                                         </LazyLoading>
-                                    }
-                                ></Route>
-                            </Route>
-                        );
-                    })}
-                </Routes>
-            </Layout>
+                                    </Layout>
+                                }
+                            ></Route>
+                        </Route>
+                    );
+                })}
+            </Routes>
         </ScrollTop>
     );
 }

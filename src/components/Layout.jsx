@@ -6,7 +6,7 @@ function Layout({ children }) {
     const darkMode = useToggleMode((state) => state.darkMode);
     return (
         <div className={darkMode ? 'dark' : ''}>
-            {/* <Header /> */}
+            <Header />
             {children}
         </div>
     );

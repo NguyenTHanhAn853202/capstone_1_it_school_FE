@@ -1,0 +1,45 @@
+.move-right {
+    transform: translateX(100%);
+    width: 100%;
+    height: 100%;
+    // animation: move-r linear 0.5s;
+    transition: all 0.5s linear;
+}
+
+
+.move-left {
+    top: 0;
+    width: 100%;
+    height: 100%;
+    // animation: move-l linear 0.5s;
+    transform: translateX(-100%);
+    transition: all 0.5s linear;
+}
+
+.reset {
+    transition: all 0.5s linear;
+    // width: 100%;
+    height: 100%;
+}
+
+@keyframes move-l {
+    0% {
+        opacity: 0%;
+        transform: translateX(0%);
+    }
+    100% {
+        opacity: 100%;
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes move-r {
+    0% {
+        opacity: 0%;
+        transform: translateX(0%);
+    }
+    100% {
+        opacity: 100%;
+        transform: translateX(100%);
+    }
+}

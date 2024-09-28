@@ -4,12 +4,15 @@ import logo from '~/public/media/images/logo.png';
 import { Link } from 'react-router-dom';
 import Button from '~/components/Button';
 import mainLading from '~/public/media/images/main_lading_page.png';
+import LoginRegister from './LoginRegister';
+import { useState } from 'react';
 
 const cx = classnames.bind(style);
 
 function Lading() {
+    const [enjoin, setEnjoin] = useState(false);
     return (
-        <div className={cx('wrapper')}>
+        <div className={cx('wrapper', 'relative')}>
             <div className="flex justify-between pt-[20px] pl-20 pr-20 items-center">
                 <img className="w-[70px] h-[70px] object-cover" src={logo} />
                 <ul className="flex items-center space-x-10 m-0">
@@ -22,7 +25,7 @@ function Lading() {
                         <Link className=" hover:opacity-65 hover:underline text-[1.6rem] font-bold">Thông tin</Link>
                     </li>
                     <li>
-                        <Button to={'/login'}>Trải nghiệm</Button>
+                        <Button onClick={() => setEnjoin(!enjoin)}>Trải nghiệm</Button>
                     </li>
                 </ul>
             </div>
@@ -42,6 +45,7 @@ function Lading() {
                     </Button>
                 </div>
             </div>
+            {enjoin && <LoginRegister setEnjoin={setEnjoin} />}
         </div>
     );
 }
