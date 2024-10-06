@@ -4,10 +4,12 @@ import PrivateRoutes from '../components/PrivateRoutes ';
 import ScrollTop from '../components/ScrollTop';
 import LazyLoading from './lazyLoading';
 import Layout from '~/components/Layout';
+import { ToastContainer } from 'react-toastify';
 
 function AppRouter() {
     return (
         <ScrollTop>
+            <ToastContainer />
             <Routes>
                 {publicPath.map((item, index) => {
                     const Layout = item.Element;

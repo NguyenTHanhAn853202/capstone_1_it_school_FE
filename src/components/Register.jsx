@@ -1,28 +1,85 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Button from './Button';
 import logoFacebook from '~/public/media/images/logo_facebook_black.png';
 import logoGoogle from '~/public/media/images/logo_google_black.png';
 import logoGithub from '~/public/media/images/logo_git.png';
+import { useEffect, useState } from 'react';
+import { object, string, number, date, InferType, ref } from 'yup';
+import { toast } from 'react-toastify';
+import { success, toastError, toastSuccess } from '~/utils/toasty';
+import { post } from '~/database';
 
 const logo = [logoFacebook, logoGoogle, logoGithub];
 
 function Register() {
+    const navigate = useNavigate();
+    const [register, setRegister] = useState({
+        username: '',
+        password: '',
+        confirmPassword: '',
+    });
+    const registerValidate = object({
+        username: string().test('username-validation', 'tên đăng nhập là email hoặc số điện thoại', (value) => {
+            const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+            const phoneRegex = /^[0-9]{10,11}$/;
+            return emailRegex.test(value) || phoneRegex.test(value);
+        }),
+        password: string()
+            .min(7, 'Mật khẩu ít nhất có 7 ký tự')
+            .max(30, 'Mật khẩu không vượt quá 30 ký tự')
+            .matches(/[a-z]/, 'Mật khẩu phải chứa ít nhất một chữ cái thường')
+            .matches(/[A-Z]/, 'Mật khẩu phải chứa ít nhất một chữ cái hoa')
+            .matches(/\d/, 'Mật khẩu phải chứa ít nhất một chữ số')
+            .matches(/[!@#$%^&*(),.?":{}|<>]/, 'Mật khẩu phải chứa ít nhất một ký tự đặc biệt')
+            .required('Vui lòng nhập mật khẩu'),
+        confirmPassword: string().oneOf([ref('password'), null], 'Mật khẩu không trùng khớp'),
+    });
+
+    const handleSubmitRegister = async (e) => {
+        try {
+            e.preventDefault();
+            const value = await registerValidate.validate(register);
+            const response = await post('/user/register', {
+                username: value.username,
+                password: value.password,
+                repeatPassword: value.confirmPassword,
+            });
+            if (response.status === 'ok') {
+                toastSuccess('Đăng ký thành công');
+                navigate('/');
+            }
+            const errorMessage = response?.response?.data?.message;
+            toastError(errorMessage);
+        } catch (error) {
+            toastError(error.message);
+            console.log(error.message);
+        }
+    };
+
     return (
         <div className="h-[100%] w-full bg-white flex justify-center top-0 absolute z-50">
             <div className="w-[70%] h-[100%]">
-                <form>
-                    <h2 className="text-center font-light pb-4 pt-[50px]">Đăng Ký</h2>
+                <form onSubmit={handleSubmitRegister}>
+                    <h2 className="text-center font-light pb-4 pt-[50px] text-black text-[2rem]">Đăng Ký</h2>
                     <input
-                        placeholder="example@gmail.com"
-                        className="mb-[25px] bg-input opacity-95 rounded-md w-[100%] h-[40px] block ml-auto mr-auto px-[10px] my[5px]"
+                        value={register.username}
+                        onChange={(e) => setRegister((props) => ({ ...props, username: e.target.value }))}
+                        placeholder="Email hoặc số điện thoại"
+                        className="mb-[25px] bg-input text-black opacity-95 rounded-md w-[100%] h-[40px] block ml-auto mr-auto px-[10px] my[5px]"
                     />
                     <input
+                        type="password"
+                        value={register.password}
+                        onChange={(e) => setRegister((props) => ({ ...props, password: e.target.value }))}
                         placeholder="Mật khẩu ít nhất có 7 ký tự"
-                        className="bg-input opacity-95 rounded-md w-[100%] h-[40px] block ml-auto mr-auto px-[10px] my[5px]"
+                        className="bg-input text-black opacity-95 rounded-md w-[100%] h-[40px] block ml-auto mr-auto px-[10px] my[5px]"
                     />
                     <input
+                        value={register.confirmPassword}
+                        type="password"
+                        onChange={(e) => setRegister((props) => ({ ...props, confirmPassword: e.target.value }))}
                         placeholder="Nhập lại mật khẩu"
-                        className="bg-input opacity-95 rounded-md w-[100%] h-[40px] block ml-auto mt-[25px] mr-auto px-[10px] my[5px]"
+                        className="bg-input text-black opacity-95 rounded-md w-[100%] h-[40px] block ml-auto mt-[25px] mr-auto px-[10px] my[5px]"
                     />
 
                     <div className="flex justify-center mt-2">
@@ -31,7 +88,7 @@ function Register() {
                         </Button>
                     </div>
                 </form>
-                <span className="block text-center mt-3">Hoặc sử dụng cách khác</span>
+                <span className="block text-center mt-3 text-black">Hoặc sử dụng cách khác</span>
                 <div className="flex space-x-[10px] justify-center mt-[15px] ">
                     {logo.map((item, index) => (
                         <Link

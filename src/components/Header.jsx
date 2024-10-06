@@ -1,4 +1,3 @@
-import { Container, Row } from 'react-bootstrap';
 import { useToggleMode } from '~/hook/useDarkMode';
 
 import classname from 'classnames/bind';
