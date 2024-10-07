@@ -7,11 +7,11 @@ import classname from 'classnames/bind';
 
 const cx = classname.bind(styles);
 
-function LoginRegister({ setEnjoin }) {
-    const [isRun, setIsMove] = useState(null);
+function LoginRegister({ setEnjoin, enjoin }) {
+    const [isRun, setIsMove] = useState(enjoin?.value === 'register' ? true : false);
     const layoutRef = useRef();
     const handleClickClose = (e) => {
-        e.target === layoutRef.current && setEnjoin(false);
+        e.target === layoutRef.current && setEnjoin({ value: null });
     };
     return (
         <div
@@ -33,7 +33,7 @@ function LoginRegister({ setEnjoin }) {
                             >
                                 <div>
                                     <h2 className="text-center text-white">Chào mừng bạn đến với ITSchool</h2>
-                                    <p className="w-[80%] text-center font-light ml-auto mr-auto pt-3">
+                                    <p className="w-[80%] text-white text-center font-light ml-auto mr-auto pt-3">
                                         Hãy tạo tài khoản ngay để bắt đầu hành trình học tập và khám phá thế giới công
                                         nghệ.
                                     </p>
@@ -56,7 +56,7 @@ function LoginRegister({ setEnjoin }) {
                             >
                                 <div>
                                     <h2 className="text-center text-white">Chào mừng trở lại!</h2>
-                                    <p className="w-[80%] text-center font-light ml-auto mr-auto pt-3">
+                                    <p className="w-[80%] text-center font-light ml-auto mr-auto pt-3 text-white">
                                         Vui lòng đăng nhập để tiếp tục khám phá và học tập tại IT School.
                                     </p>
                                     <div className="flex justify-center pt-3">

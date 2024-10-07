@@ -16,7 +16,7 @@ export const get = async (url, option = {}) => {
 };
 export const post = async (url, body, option = {}) => {
     try {
-        return await configAxios.post(url, body, option);
+        return (await configAxios.post(url, body, option)).data;
     } catch (error) {
         return error;
     }
