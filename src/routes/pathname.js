@@ -4,6 +4,8 @@ import React from 'react';
 import Home from '~/pages/Home';
 import Lading from '~/pages/Lading';
 import LoginRegister from '~/pages/LoginRegister';
+import ForgotPassword from '~/components/ForgotPassword1';
+import VerifyCode from '~/components/ForgotPasswordOtp';
 
 export const publicPath = [
     { pathname: '/', Element: Home },
