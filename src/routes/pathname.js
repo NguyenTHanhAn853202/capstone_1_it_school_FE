@@ -7,6 +7,7 @@ import LoginRegister from '~/pages/LoginRegister';
 const ForgotPassword = React.lazy(() => import('~/components/ForgotPassword'));
 const VerifyCode = React.lazy(() => import('~/components/ForgotPasswordOtp'));
 const Profile = React.lazy(() => import('~/pages/Profile'));
+const VerifyCodeSeccesfully = React.lazy(() => import('~/components/VerifyCodeSuccesfully'));
 
 export const publicPath = [
     { pathname: '/', Element: Home },
@@ -14,6 +15,7 @@ export const publicPath = [
     { pathname: '/forgot-password', Element: ForgotPassword },
     { pathname: '/verify-code', Element: VerifyCode },
     { pathname: '/profile', Element: Profile },
+    { pathname: '/verify-code-succesfullt', Element: VerifyCodeSeccesfully },
 ];
 
 export const privatePath = [];
