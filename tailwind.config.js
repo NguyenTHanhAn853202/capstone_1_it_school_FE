@@ -22,6 +22,12 @@ module.exports = {
             lg: '16px',
             xl: '24px',
             container: '90%',
+            1: '8px',
+            2: '12px',
+            3: '16px',
+            4: '24px',
+            5: '32px',
+            6: '48px',
         },
         fontSize: {
             normal: '1.6rem',

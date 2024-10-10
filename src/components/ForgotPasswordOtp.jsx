@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { post } from '~/database';
 import logo from '~/public/media/images/logo.png';
 import Button from './Button';
@@ -12,6 +12,7 @@ function VerifyCode() {
     const [message, setMessage] = useState('');
     const location = useLocation();
     const username = location.state?.username;
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -20,6 +21,7 @@ function VerifyCode() {
                 username,
                 code: verificationCode * 1,
             });
+            response?.status === 'ok' && navigate('/verify-code-succesfullt');
             response?.response?.data?.status === 'error' && toastError(response.response.data?.message);
         } catch (error) {
             toastError(error.message);
@@ -35,7 +37,7 @@ function VerifyCode() {
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
             <div className="w-full max-w-md bg-white rounded-lg shadow-lg px-[30px] py-[50px]">
                 <div className="text-center mb-6">
-                    <img src={logo} className="mx-auto mb-4 w-12 h-12" />
+                    <img src={logo} className="mx-auto mb-4 size-[50px]" />
                     <h2 className="text-2xl font-semibold text-gray-800">Xác minh mã</h2>
                     <p className="text-gray-600 mt-2">Nhập mã xác nhận đã gửi đến {username} </p>
                 </div>
