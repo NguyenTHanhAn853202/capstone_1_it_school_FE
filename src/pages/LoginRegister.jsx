@@ -19,7 +19,7 @@ function LoginRegister({ setEnjoin, enjoin }) {
             ref={layoutRef}
             className="w-full h-[100vh] absolute top-0 right-0 left-0 flex justify-center items-center bg-mark "
         >
-            <div className="w-[60%] h-[500px] bg-[url('/src/public/media/images/backgroup_login.jpg.png')] overflow-hidden  rounded-[20px]  bg-no-repeat bg-cover ">
+            <div className="w-[60%] h-[500px] bg-[url('/src/public/media/images/backgroup_login.jpg.png')] rounded-[20px]  bg-no-repeat bg-cover ">
                 <div className="h-full relative">
                     <div className={cx('test')}></div>
                     <div className={cx(isRun ? 'move-right' : 'reset', 'z-50', 'relative w-1/2')}>
@@ -29,7 +29,9 @@ function LoginRegister({ setEnjoin, enjoin }) {
                     <div className={cx(isRun ? 'move-left' : 'reset', 'absolute w-1/2 top-0 right-0')}>
                         {!isRun ? (
                             <div
-                                className={cx('absolute h-full w-full right-0 top-0 flex items-center justify-center')}
+                                className={cx(
+                                    'absolute h-full w-full right-[-100%] top-[-100%] flex items-center justify-center',
+                                )}
                             >
                                 <div>
                                     <h2 className="text-center text-white">Chào mừng bạn đến với ITSchool</h2>
@@ -40,10 +42,10 @@ function LoginRegister({ setEnjoin, enjoin }) {
                                     <div className="flex justify-center pt-3">
                                         <button
                                             onClick={() => setIsMove(!isRun)}
-                                            className="border-white text-[1.2rem] border rounded-2xl hover:opacity-50 px-5 py-1 text-white flex items-center"
+                                            className="text-[1.2rem] border border-solid px-lg py-[5px] mt-lg border-white rounded-2xl hover:opacity-50 px-5 py-1 text-white flex items-center"
                                         >
                                             Đăng ký
-                                            <span className="ml-[20px] block">
+                                            <span className="ml-[20px] block text-white">
                                                 <FaChevronRight />
                                             </span>
                                         </button>
@@ -52,7 +54,9 @@ function LoginRegister({ setEnjoin, enjoin }) {
                             </div>
                         ) : (
                             <div
-                                className={cx('w-full absolute h-full top-0 right-0 flex items-center justify-center')}
+                                className={cx(
+                                    'w-full absolute h-full top-0 right-[-100%] flex items-center justify-center',
+                                )}
                             >
                                 <div>
                                     <h2 className="text-center text-white">Chào mừng trở lại!</h2>
@@ -62,9 +66,9 @@ function LoginRegister({ setEnjoin, enjoin }) {
                                     <div className="flex justify-center pt-3">
                                         <button
                                             onClick={() => setIsMove(!isRun)}
-                                            className="border-white text-[1.2rem] border rounded-2xl hover:opacity-50 px-5 py-1 text-white flex items-center"
+                                            className=" text-[1.2rem] border border-solid px-lg py-[5px] mt-lg border-white rounded-2xl hover:opacity-50 px-5 py-1 text-white flex items-center"
                                         >
-                                            <span className="mr-[20px] block">
+                                            <span className="mr-[20px] block text-white ">
                                                 <FaChevronLeft />
                                             </span>
                                             Đăng nhập

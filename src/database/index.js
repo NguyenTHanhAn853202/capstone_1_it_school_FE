@@ -9,7 +9,7 @@ const configAxios = axios.create({
 
 export const get = async (url, option = {}) => {
     try {
-        return await configAxios.get(url, option);
+        return (await configAxios.get(url, option)).data;
     } catch (error) {
         return error;
     }

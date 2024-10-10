@@ -16,6 +16,16 @@ module.exports = {
             button_green: '#5FB5B8',
             mark: 'rgba(209,213,219,0.5)',
         },
+        spacing: {
+            sm: '8px',
+            md: '12px',
+            lg: '16px',
+            xl: '24px',
+            container: '90%',
+        },
+        fontSize: {
+            normal: '1.6rem',
+        },
     },
     plugins: [],
 };

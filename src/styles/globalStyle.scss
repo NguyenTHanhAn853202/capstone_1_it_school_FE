@@ -39,7 +39,8 @@ body {
     font-family: 'Poppins', 'sans-serif';
     text-rendering: optimizeSpeed;
     height: 100vh;
-    color: white;
+    // color: white;
+    color: black;
 }
 
 input,
@@ -59,16 +60,14 @@ textarea {
     font: inherit;
 }
 
+span,
 h1,
 h2,
 h3,
 h4,
 h5,
 h6,
+label,
 p {
     color: black;
-}
-
-.w-container {
-    width: 96% !important;
 }

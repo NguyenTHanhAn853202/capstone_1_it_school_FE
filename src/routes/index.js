@@ -12,7 +12,7 @@ function AppRouter() {
             <ToastContainer />
             <Routes>
                 {publicPath.map((item, index) => {
-                    const Layout = item.Element;
+                    const Item = item.Element;
 
                     return item?.noLayout ? (
                         <Route
@@ -20,7 +20,7 @@ function AppRouter() {
                             path={item.pathname}
                             element={
                                 <LazyLoading>
-                                    <Layout />
+                                    <Item />
                                 </LazyLoading>
                             }
                         ></Route>
@@ -31,7 +31,7 @@ function AppRouter() {
                             element={
                                 <Layout>
                                     <LazyLoading>
-                                        <Layout />
+                                        <Item />
                                     </LazyLoading>
                                 </Layout>
                             }
@@ -39,7 +39,7 @@ function AppRouter() {
                     );
                 })}
                 {privatePath.map((item, index) => {
-                    const Layout = item.Element;
+                    const Item = item.Element;
                     return item?.noLayout ? (
                         <Route key={index} element={<PrivateRoutes />}>
                             <Route
@@ -47,7 +47,7 @@ function AppRouter() {
                                 path={item.pathname}
                                 element={
                                     <LazyLoading>
-                                        <Layout />
+                                        <Item />
                                     </LazyLoading>
                                 }
                             ></Route>
