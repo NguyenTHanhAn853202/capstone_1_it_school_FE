@@ -32,10 +32,10 @@ function  VerifyCodeSuccesfully(){
     };
   
     return (
-      <div className="flex justify-center items-center min-h-screen">
+      <div className="flex justify-center items-center min-h-screen ">
         <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md">
           <div className="flex justify-center mb-4">
-            <img src={logo} className="h-12 w-12" />
+            <img src={logo} className="mx-auto mb-4 size-[50px]" />
           </div>
           <h2 className="text-center text-2xl font-bold mb-6">Lấy lại mật khẩu</h2>
           <form onSubmit={handleSubmit}>
@@ -60,8 +60,8 @@ function  VerifyCodeSuccesfully(){
                 />
             </div>
             {/* {error && <p className="text-red-500 text-xs italic">{error}</p>} */}
-            <div className="flex items-center justify-center">
-                <Button className="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            <div className="flex items-center justify-center mb-4">
+                <Button className=" w-full bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-teal-500"
                 type="submit"> Đặt lại mật khẩu
                 </Button>
             </div>
