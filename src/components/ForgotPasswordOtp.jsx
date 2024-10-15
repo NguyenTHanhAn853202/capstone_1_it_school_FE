@@ -21,7 +21,7 @@ function VerifyCode() {
                 username,
                 code: verificationCode * 1,
             });
-            response?.status === 'ok' && navigate('/verify-code-succesfullt');
+            response?.status === 'ok' && navigate('/verify-code-succesfully');
             response?.response?.data?.status === 'error' && toastError(response.response.data?.message);
         } catch (error) {
             toastError(error.message);

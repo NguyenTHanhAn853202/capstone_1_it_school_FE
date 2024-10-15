@@ -1,55 +1,93 @@
 import Container from '~/components/Container';
 import { GoArrowLeft } from 'react-icons/go';
-// import avatar from '~/public/media/images/logo_node_react.png';
+import avatarDefault from '~/public/media/images/default_avatar.jpg';
 import { useEffect, useId, useRef, useState } from 'react';
 import Input from '~/components/Input';
 import InputDateTime from '~/components/InputDateTime';
-import DatePicker from 'react-datepicker';
 import Button from '~/components/Button';
-import { get } from '~/database';
+import { get, post } from '~/database';
 import { PATH_MEDIA } from '~/utils/secret';
+import { useNavigate } from 'react-router-dom';
 
 function Profile() {
     const idInput = useId();
     const [startDate, setStartDate] = useState('');
+    const imgRef = useRef();
+    const navigate = useNavigate();
     const [{ username, address, phoneNumber, email, avatarUrl, avatar }, setInformation] = useState({
         username: '',
         address: '',
         phoneNumber: '',
         email: '',
         avatarUrl: '',
-        avatar: '',
+        avatar: avatarDefault,
     });
+
+    const handleSubmit = async (e) => {
+        try {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('avatar', avatar);
+            formData.append('name', username);
+            formData.append('address', address);
+            formData.append('phoneNumber', phoneNumber);
+            formData.append('email', email);
+            formData.append('birthday', startDate);
+            const response = await post('/user/edit-profile', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            console.log(response);
+        } catch (error) {}
+    };
+
+    const handleChangeAvatar = (e) => {
+        const file = e.target.files[0];
+
+        setInformation((props) => ({ ...props, avatar: file }));
+    };
+
+    const handleErrorImg = (e) => {
+        e.target.src = typeof avatar === 'string' ? avatar : URL.createObjectURL(avatar);
+    };
 
     useEffect(() => {
         (async () => {
             const response = (await get('/user/profile')).data;
-            console.log(response);
-
-            setInformation({
-                avatar: response.avatar,
-                username: response.name,
-                phoneNumber: response.phoneNumber,
-                email: response.email,
-                address: response.address,
-            });
+            if (response?.status === 'ok') {
+                setInformation({
+                    avatar: response.avatar,
+                    username: response.name,
+                    phoneNumber: response.phoneNumber,
+                    email: response.email,
+                    address: response.address,
+                });
+                setStartDate(response.birthday);
+            }
         })();
     }, []);
-
-    // console.log(username, address, phoneNumber, email, avatarUrl);
 
     return (
         <Container>
             <div className="py-xl">
-                <button className="text-normal text-black absolute">
+                <button onClick={(e) => navigate(-1)} className="text-normal text-black absolute">
                     <GoArrowLeft />
                 </button>
-                <form className="w-[600px] h-[500px] absolute left-[50%] -translate-x-[50%]">
+                <form onSubmit={handleSubmit} className="w-[600px] h-[500px] absolute left-[50%] -translate-x-[50%]">
                     <img
+                        onError={handleErrorImg}
+                        ref={imgRef}
                         src={`${PATH_MEDIA}/${avatar}`}
                         className="size-[70px] rounded-3xl block m-auto border border-solid border-dark"
                     />
-                    <input type="file" id={idInput} className="hidden" accept=".jpg, .jpeg, .png, .gif, .bmp, .webp" />
+                    <input
+                        onChange={handleChangeAvatar}
+                        type="file"
+                        id={idInput}
+                        className="hidden"
+                        accept=".jpg, .jpeg, .png, .gif, .bmp, .webp"
+                    />
                     <div className="flex justify-center">
                         <label htmlFor={idInput} className="cursor-pointer mt-sm underline italic">
                             Đổi ảnh đại diện

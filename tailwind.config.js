@@ -15,6 +15,7 @@ module.exports = {
             input: '#e5e7eb',
             button_green: '#5FB5B8',
             mark: 'rgba(209,213,219,0.5)',
+            ip_dark: '#D9D9D9',
         },
         spacing: {
             sm: '8px',

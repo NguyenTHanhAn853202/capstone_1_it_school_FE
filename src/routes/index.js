@@ -1,5 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
-import { publicPath, privatePath } from './pathname';
+import { publicPath, privatePath } from './customPage';
 import PrivateRoutes from '../components/PrivateRoutes ';
 import ScrollTop from '../components/ScrollTop';
 import LazyLoading from './lazyLoading';
