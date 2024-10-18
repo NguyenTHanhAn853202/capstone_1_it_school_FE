@@ -2,6 +2,7 @@ import React from 'react';
 import Home from '~/pages/Home';
 import Lading from '~/pages/Lading';
 import { pathname } from './pathname';
+import UploadQuestion from '~/pages/UploadQuestion';
 const ForgotPassword = React.lazy(() => import('~/components/ForgotPassword'));
 const VerifyCode = React.lazy(() => import('~/components/ForgotPasswordOtp'));
 const Profile = React.lazy(() => import('~/pages/Profile'));
@@ -15,7 +16,8 @@ export const publicPath = [
     { pathname: pathname.VERIFY_CODE, Element: VerifyCode },
     { pathname: pathname.PROFILE, Element: Profile },
     { pathname: pathname.VERIFY_CODE_SUCCESFULLY, Element: VerifyCodeSeccesfully },
-    { pathname: pathname.CHANGE_PASSWORD, Element: ChangePassowrd },
+    { pathname: pathname.CHANGE_PASSWORD, Element: ChangePassowrd, noLayout: true },
+    { pathname: pathname.UPLOADQUESTION, Element: UploadQuestion },
 ];
 
 export const privatePath = [];

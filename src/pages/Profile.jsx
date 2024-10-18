@@ -8,6 +8,7 @@ import Button from '~/components/Button';
 import { get, post } from '~/database';
 import { PATH_MEDIA } from '~/utils/secret';
 import { useNavigate } from 'react-router-dom';
+import { toastSuccess } from '~/utils/toasty';
 
 function Profile() {
     const idInput = useId();
@@ -22,6 +23,7 @@ function Profile() {
         avatarUrl: '',
         avatar: avatarDefault,
     });
+    console.log(username, address, phoneNumber, email, avatarUrl, avatar);
 
     const handleSubmit = async (e) => {
         try {
@@ -38,7 +40,8 @@ function Profile() {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-            console.log(response);
+            response?.status === 'ok' && toastSuccess(response.message);
+            response?.response?.data?.message && toastSuccess(response.response.data.message);
         } catch (error) {}
     };
 
@@ -54,16 +57,17 @@ function Profile() {
 
     useEffect(() => {
         (async () => {
-            const response = (await get('/user/profile')).data;
+            const response = await get('/user/profile');
             if (response?.status === 'ok') {
+                const data = response.data;
                 setInformation({
-                    avatar: response.avatar,
-                    username: response.name,
-                    phoneNumber: response.phoneNumber,
-                    email: response.email,
-                    address: response.address,
+                    avatar: data.avatar,
+                    username: data.name,
+                    phoneNumber: data.phoneNumber,
+                    email: data.email,
+                    address: data.address,
                 });
-                setStartDate(response.birthday);
+                setStartDate(data.birthday);
             }
         })();
     }, []);

@@ -6,4 +6,5 @@ export const pathname = {
     PROFILE:"/profile",
     VERIFY_CODE_SUCCESFULLY:"/verify-code-succesfully",
     CHANGE_PASSWORD:"/change-password",
+    UPLOADQUESTION:"/upload-question",
 }

@@ -8,6 +8,7 @@ import { object, string, number, date, InferType, ref } from 'yup';
 import { toast } from 'react-toastify';
 import { success, toastError, toastSuccess } from '~/utils/toasty';
 import { post } from '~/database';
+import { pathname } from '~/routes/pathname';
 
 const logo = [logoFacebook, logoGoogle, logoGithub];
 
