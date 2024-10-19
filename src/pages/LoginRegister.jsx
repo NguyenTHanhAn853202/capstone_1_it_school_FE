@@ -30,7 +30,7 @@ function LoginRegister({ setEnjoin, enjoin }) {
                         {!isRun ? (
                             <div
                                 className={cx(
-                                    'absolute h-full w-full right-[-100%] top-[-100%] flex items-center justify-center',
+                                    'absolute h-full w-full flex items-center justify-center',
                                 )}
                             >
                                 <div>
@@ -55,7 +55,7 @@ function LoginRegister({ setEnjoin, enjoin }) {
                         ) : (
                             <div
                                 className={cx(
-                                    'w-full absolute h-full top-0 right-[-100%] flex items-center justify-center',
+                                    'w-full absolute h-full  flex items-center justify-center',
                                 )}
                             >
                                 <div>

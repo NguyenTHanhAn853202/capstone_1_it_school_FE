@@ -10,13 +10,16 @@ module.exports = {
             black: '#000000',
             light: '#f5f6f7',
             dark: '#212529',
-            red: '#dc2626',
+            red: '#FD4040',
             button: '#73A2E0',
             input: '#e5e7eb',
             button_green: '#5FB5B8',
             mark: 'rgba(209,213,219,0.5)',
             ip_dark: '#D9D9D9',
             side_bar: '#F2F5F8',
+            gold: '#DFB300',
+            silver: '#ABABAB',
+            border: '#868686',
         },
         spacing: {
             sm: '8px',
@@ -31,11 +34,31 @@ module.exports = {
             4: '24px',
             5: '32px',
             6: '48px',
-            side_bar: '15%',
-            header: '85%',
+
+            side_bar: '17%',
+            header: '83%',
         },
         fontSize: {
             normal: '1.6rem',
+            14: '1.4rem',
+            12: '1.2rem',
+            10: '1rem',
+        },
+        screens: {
+            sm: '640px',
+            // => @media (min-width: 640px) { ... }
+
+            md: '768px',
+            // => @media (min-width: 768px) { ... }
+
+            lg: '1024px',
+            // => @media (min-width: 1024px) { ... }
+
+            xl: '1280px',
+            // => @media (min-width: 1280px) { ... }
+            '1xl': '1430px',
+            '2xl': '1536px',
+            // => @media (min-width: 1536px) { ... }
         },
     },
     plugins: [],

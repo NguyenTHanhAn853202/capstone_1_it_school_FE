@@ -3,12 +3,11 @@ import { useToggleMode } from '~/hook/useDarkMode';
 import SideBar from './Sidebar';
 
 function Layout({ children }) {
-    const darkMode = useToggleMode((state) => state.darkMode);
     return (
-        <div className={darkMode ? 'dark' : ''}>
+        <div className="relative">
             <SideBar />
             <Header />
-            {children}
+            <div className="absolute w-[80%] right-0 top-[70px] h-[70px] 1xl:w-[85%]">{children}</div>
         </div>
     );
 }
