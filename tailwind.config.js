@@ -15,11 +15,14 @@ module.exports = {
             input: '#e5e7eb',
             button_green: '#5FB5B8',
             mark: 'rgba(209,213,219,0.5)',
-            ip_dark: '#D9D9D9',
+            ip_dark: '#EEF0F1',
             side_bar: '#F2F5F8',
             gold: '#DFB300',
             silver: '#ABABAB',
             border: '#868686',
+            container: '#F2F5F8',
+            shadow: '#969595',
+            
         },
         spacing: {
             sm: '8px',

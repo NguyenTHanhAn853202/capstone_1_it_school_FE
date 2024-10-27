@@ -7,5 +7,6 @@ export const pathname = {
     VERIFY_CODE_SUCCESFULLY:"/verify-code-succesfully",
     CHANGE_PASSWORD:"/change-password",
     UPLOADQUESTION:"/upload-question",
-    COURSEINFORMATION:"/course-information"
+    COURSEINFORMATION:"/course-information",
+    CREATECOURSE:"create-course"
 }

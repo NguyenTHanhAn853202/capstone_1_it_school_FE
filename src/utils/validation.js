@@ -13,3 +13,5 @@ export const changePasswordValidation = Yup.object({
         .oneOf([Yup.ref('password'), null], 'Mật khẩu xác nhận không khớp')
         .required('Vui lòng xác nhận mật khẩu mới'),
 });
+
+export const numberValidation = Yup.number()
