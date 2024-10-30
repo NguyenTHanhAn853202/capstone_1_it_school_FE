@@ -20,7 +20,7 @@ export const publicPath = [
     { pathname: pathname.VERIFY_CODE_SUCCESFULLY, Element: VerifyCodeSeccesfully },
     { pathname: pathname.CHANGE_PASSWORD, Element: ChangePassowrd, noLayout: true },
     { pathname: pathname.UPLOADQUESTION, Element: UploadQuestion },
-    { pathname: pathname.COURSEINFORMATION, Element: CourseInformation },
+    { pathname: pathname.COURSEINFORMATION + '/:id', Element: CourseInformation },
     { pathname: pathname.CREATECOURSE, Element: CreateCourse },
 ];
 

@@ -40,9 +40,13 @@ export const useLesson = create((set) => ({
             lessons: state.lessons.map((lesson, i) => (i === index ? { ...lesson, ...updatedFields } : lesson)),
         })),
     removeLesson: (index) =>
-        set((state) => ({
-            lessons: state.lessons.filter((_, i) => i !== index),
-        })),
+        set((state) => {
+            if (state.lessons.length === 1) return state;
+            else
+                return {
+                    lessons: state.lessons.filter((_, i) => i !== index),
+                };
+        }),
     clearLessons: () =>
         set({
             lessons: [

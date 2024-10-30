@@ -13,7 +13,7 @@ const handleFileUpload = (e) => {
   
       // Lấy sheet đầu tiên
       const sheetName = workbook.SheetNames[0];
-      console.log(sheetName);
+
       
       const sheet = workbook.Sheets[sheetName];
   

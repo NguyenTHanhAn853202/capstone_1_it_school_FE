@@ -72,13 +72,14 @@ function Lesson({ numberLesson = 0 }) {
                                     fileName={lesson.video.name}
                                     perLoad={100}
                                     size={transformSizeFile(lesson.video.size)}
+                                    onClick={() => setLesson.updateLesson(numberLesson, { video: '' })}
                                 />
                             )}
                             <UploadFileCard
                                 onChange={(e) =>
                                     setLesson.updateLesson(numberLesson, { interactionAssignment: e.target.files[0] })
                                 }
-                                accept=".xlxs, .xls, .docx"
+                                accept=".xlsx, .xls, .docx"
                                 title={'Bài tập tương tác'}
                                 description={'Chọn file bài tập của bạn'}
                                 icon={<IoCloudUploadOutline className="text-normal" />}
@@ -88,6 +89,11 @@ function Lesson({ numberLesson = 0 }) {
                                     fileName={lesson.interactionAssignment.name}
                                     perLoad={100}
                                     size={transformSizeFile(lesson.interactionAssignment.size)}
+                                    onClick={() =>
+                                        setLesson.updateLesson(numberLesson, {
+                                            interactionAssignment: '',
+                                        })
+                                    }
                                 />
                             )}
                         </div>
@@ -104,13 +110,14 @@ function Lesson({ numberLesson = 0 }) {
                                     fileName={lesson.thumbnail.name}
                                     perLoad={100}
                                     size={transformSizeFile(lesson.thumbnail.size)}
+                                    onClick={() => setLesson.updateLesson(numberLesson, { thumbnail: '' })}
                                 />
                             )}
                             <UploadFileCard
                                 onChange={(e) =>
                                     setLesson.updateLesson(numberLesson, { assignment: e.target.files[0] })
                                 }
-                                accept=".xlxs, .xls, .docx"
+                                accept=".xlsx, .xls, .docx"
                                 title={'Bài tập'}
                                 description={'Chọn bài tập'}
                                 icon={<IoCloudUploadOutline className="text-normal" />}
@@ -120,6 +127,7 @@ function Lesson({ numberLesson = 0 }) {
                                     fileName={lesson.assignment.name}
                                     perLoad={100}
                                     size={transformSizeFile(lesson.assignment.size)}
+                                    onClick={() => setLesson.updateLesson(numberLesson, { assignment: '' })}
                                 />
                             )}
                         </div>

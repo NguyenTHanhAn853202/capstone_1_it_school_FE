@@ -8,7 +8,7 @@ function Star({ starNumber = 0, style, setStarNumber }) {
     return (
         <ul className={`flex gap-[2px] ${style}`}>
             {listStar.map((item, index) => (
-                <li className="h-[16px] flex items-center">
+                <li key={index} className="h-[16px] flex items-center">
                     <button onClick={() => handleClickStar(item.id)}>
                         <FaStar className={`${starNumber < item.id ? 'text-silver' : 'text-gold'}`} />
                     </button>

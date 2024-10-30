@@ -1,5 +1,6 @@
 import { CiFileOn } from 'react-icons/ci';
-function UplaoadedFileCard({ fileName, perLoad, size }) {
+import { IoTrashOutline } from 'react-icons/io5';
+function UplaoadedFileCard({ fileName, perLoad, size, onClick }) {
     const wSize = `w-[${perLoad}%]`;
     return (
         <div className="relative w-full flex bg-ip_dark rounded-lg px-2 font-extralight py-2 border border-ip_dark outline-none  shadow-shadow shadow-md ">
@@ -17,6 +18,9 @@ function UplaoadedFileCard({ fileName, perLoad, size }) {
                     <span className="text-[0.7rem] opacity-60">{perLoad + '%'}</span>
                 </div>
             </div>
+            <button>
+                <IoTrashOutline onClick={onClick} className="text-normal text-button_green" />
+            </button>
         </div>
     );
 }

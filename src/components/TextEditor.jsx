@@ -5,7 +5,6 @@ import 'react-quill/dist/quill.snow.css';
 const toolbarOptions = [
     ['bold', 'italic', 'underline', 'strike'], // toggled buttons
     ['blockquote', 'code-block'],
-    ['image', 'formula'],
     [{ header: 1 }, { header: 2 }], // custom button values
     [{ list: 'ordered' }, { list: 'bullet' }, { list: 'check' }],
     [{ script: 'sub' }, { script: 'super' }], // superscript/subscript
@@ -18,10 +17,10 @@ const toolbarOptions = [
 
     ['clean'], // remove formatting button
 ];
-function TextEditor({ label,setValue,value }) {
+function TextEditor({ label, setValue, value }) {
     const id = useId();
     return (
-        <div className=' h-[300px]'>
+        <div className=" h-[300px]">
             {label && <label htmlFor={id}>{label}</label>}
             <ReactQuill
                 id={id}
@@ -31,7 +30,7 @@ function TextEditor({ label,setValue,value }) {
                 modules={{
                     toolbar: toolbarOptions,
                 }}
-                className='h-[200px]'
+                className="h-[200px]"
             />
         </div>
     );

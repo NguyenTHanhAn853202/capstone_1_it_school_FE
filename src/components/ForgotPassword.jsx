@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Button from './Button';
 import * as Yup from 'yup';
 import { toastError } from '~/utils/toasty';
+import { pathname } from '~/routes/pathname';
 
 // const cx = classnames.bind(style);
 const phoneRegExp = /^(\+?\d{1,4}|\d{1,4})?\s?\d{10}$/;
@@ -29,7 +30,7 @@ function ForgotPassword() {
             const response = await post('/user/forgot-password', {
                 username,
             });
-            response?.status === 'info' && navigate('/verify-code', { state: { username } });
+            response?.status === 'info' && navigate(pathname.VERIFY_CODE, { state: { username } });
             response?.response?.data?.message && toastError(response?.response?.data?.message);
         } catch (error) {
             setMessage('Yêu cầu thất bại, Vui lòng thử lại.');
