@@ -21,8 +21,6 @@ function CourseInfo() {
         (async () => {
             try {
                 const response = await get(`/course/get-course/${id}`);
-                console.log(response);
-
                 const lessonsResponse = await get(`/lesson/lessons/${id}`);
                 if (lessonsResponse.status === 'ok') {
                     const data = lessonsResponse.data;
@@ -60,7 +58,7 @@ function CourseInfo() {
             <div className="flex justify-between gap-4">
                 <div className="w-[55%] space-y-2">
                     <div className="flex gap-2 items-center">
-                        <Avatar alt={'avatar'} url={avatarDefault} />
+                        <Avatar alt={'avatar'} url={`${PATH_MEDIA}/${courseInfo?.instructor?.avatar}`} />
                         <div>
                             <strong>{courseInfo?.instructor?.name}</strong>
                             <br />

@@ -21,3 +21,11 @@ export const post = async (url, body, option = {}) => {
         return error;
     }
 };
+
+export const destroy = async (url, body, option = {}) => {
+    try {
+        return (await configAxios.delete(url, body, option)).data;
+    } catch (error) {
+        return error;
+    }
+};

@@ -24,8 +24,16 @@ function Login() {
                 password: login.password,
             });
             response.status === 'info' && toastInfo(response.message);
-            response.status === 'ok' && navigate('/');
-            response?.response?.data?.message && toastError(response?.response?.data?.message);
+            if (response?.status === 'ok') {
+                const data = response.data;
+                console.log(data);
+                localStorage.username = data.name;
+                localStorage.userId = data.user;
+                localStorage.avatar = data.avatar;
+                localStorage.profileId = data._id;
+                navigate('/');
+            }
+            response?.response?.data?.message && toastError('Đăng nhập thất bại vui lòng kiểm tra lại');
         } catch (error) {
             console.log(error);
         }

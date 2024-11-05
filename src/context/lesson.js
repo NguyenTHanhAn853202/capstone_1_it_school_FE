@@ -62,3 +62,60 @@ export const useLesson = create((set) => ({
             ],
         }),
 }));
+
+const updateLesson = {
+    id: Date.now(),
+    title: '',
+    description: '',
+    video: '',
+    assignment: '',
+    interactionAssignment: '',
+    thumbnail: '',
+};
+
+export const useUpdateLesson = create((set) => ({
+    lessons: [updateLesson],
+    addLesson: (index) => set((state) => addLesson(index, state)),
+    updateLesson: (index, updatedFields) =>
+        set((state) => ({
+            lessons: state.lessons.map((lesson, i) => (i === index ? { ...lesson, ...updatedFields } : lesson)),
+        })),
+    removeLesson: (index) =>
+        set((state) => {
+            if (state.lessons.length === 1) return state;
+            else
+                return {
+                    lessons: state.lessons.filter((_, i) => i !== index),
+                };
+        }),
+    setLength: (length) =>
+        set((state) => {
+            const lessonNumber = [];
+            for (let index = 0; index < length; index++) {
+                lessonNumber.push({
+                    id: Date.now(),
+                    title: '',
+                    description: '',
+                    video: '',
+                    assignment: '',
+                    interactionAssignment: '',
+                    thumbnail: '',
+                });
+            }
+            return { lessons: lessonNumber };
+        }),
+    clearLessons: () =>
+        set({
+            lessons: [
+                {
+                    id: Date.now(),
+                    title: '',
+                    description: '',
+                    video: '',
+                    assignment: '',
+                    interactionAssignment: '',
+                    thumbnail: '',
+                },
+            ],
+        }),
+}));

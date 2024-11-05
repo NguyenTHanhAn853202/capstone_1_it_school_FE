@@ -6,10 +6,55 @@ import { useEffect, useRef, useState } from 'react';
 import hiddenText from '~/utils/hiddenText';
 import Star from './Star';
 import { PATH_MEDIA } from '~/utils/secret';
+import Dialog from './Dialog';
+import { post } from '~/database';
+import { toastError, toastSuccess } from '~/utils/toasty';
+import { useParams } from 'react-router-dom';
 
-function ShowComment({ username, avatar, context, isFeedback = false, starNumber }) {
+function ShowComment({
+    username,
+    avatar,
+    context,
+    isFeedback = false,
+    starNumber,
+    canRemove = false,
+    rateId = '',
+    setComments,
+}) {
     const commentRef = useRef();
     const [showMore, setShowMore] = useState(false);
+    const [open, setOpen] = useState(false);
+    const [confirmLoading, setConfirmLoading] = useState(false);
+    const { id } = useParams();
+
+    const handleClickOk = async () => {
+        try {
+
+            setConfirmLoading(true);
+            if (!rateId) return toastError('Đã xãy ra lỗi trong quá trình xử lý');
+            const response = await post(`/rate/delete-rate/${rateId}`, {
+                courseId: id,
+            });
+            if (response?.status === 'ok') {
+                setComments((pre) => {
+                    const hasMore = pre.hasMore;
+                    const newComments = pre.comments.filter((item) => item._id !== rateId);
+                    console.log(newComments);
+
+                    return { hasMore, comments: newComments };
+                });
+                toastError('Xoá thành công');
+            } else {
+                toastError('Đã xãy ra lỗi trong quá trình xử lý');
+            }
+            setOpen(false);
+            setConfirmLoading(false);
+        } catch (error) {
+            toastError('Đã xãy ra lỗi trong quá trình xử lý');
+            setOpen(false);
+            setConfirmLoading(false);
+        }
+    };
 
     useEffect(() => {
         setShowMore(hiddenText(commentRef.current));
@@ -28,12 +73,24 @@ function ShowComment({ username, avatar, context, isFeedback = false, starNumber
                     </p>
                     {showMore && <button className="italic text-[0.8rem] font-light opacity-60">Xem thêm</button>}
                 </div>
-                <div className="flex items-end space-x-1 self-center">
-                    <button>
-                        <AiOutlineLike className="text-normal " />
-                    </button>
-                    <button className="font-light text-[0.9rem] opacity-70 italic">Phản hồi</button>
-                </div>
+                {canRemove && (
+                    <div className="flex items-end space-x-1 self-center mr-1">
+                        <button
+                            onClick={() => setOpen(true)}
+                            className="italic text-[0.8rem] underline hover:opacity-55"
+                        >
+                            Xoá
+                        </button>
+                        <Dialog
+                            open={open}
+                            setOpen={setOpen}
+                            confirmLoading={confirmLoading}
+                            content={'Bạn có chắc chắn muốn xoá đánh giá'}
+                            title={'Xoá đánh giá'}
+                            handleOk={handleClickOk}
+                        />
+                    </div>
+                )}
             </div>
         </div>
     );

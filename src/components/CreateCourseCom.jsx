@@ -22,6 +22,10 @@ function CreateCourseCom() {
     const [category, setCategory] = useState([]);
     const { title, description, price, level, thumbnail, categoryId } = useCourse((state) => state.course);
     const [descriptionState, setDescriptionState] = useState(description);
+
+    useEffect(() => {
+        setDescriptionState(description);
+    }, [description]);
     useEffect(() => {
         (async () => {
             try {
@@ -33,9 +37,13 @@ function CreateCourseCom() {
         })();
     }, []);
 
+    console.log(level);
+
     useEffect(() => {
         updateDescription(descriptionState);
     }, [descriptionState]);
+
+    console.log(category);
 
     return (
         <div className="space-y-4 bg-container px-6 py-4 rounded-2xl">
@@ -51,6 +59,7 @@ function CreateCourseCom() {
                     <div>
                         <label className="block ">Loại</label>
                         <select
+                            value={categoryId}
                             onChange={(e) => updateCategory(e.target.value)}
                             className="outline-none bg-ip_dark rounded-lg p-2 w-full shadow-shadow shadow-md"
                         >
@@ -82,6 +91,7 @@ function CreateCourseCom() {
                     <div>
                         <label className="block">Mức độ</label>
                         <select
+                            value={level}
                             onChange={(e) => updateLevel(e.target.value)}
                             className="outline-none bg-ip_dark rounded-lg p-2 w-full shadow-shadow shadow-md"
                         >

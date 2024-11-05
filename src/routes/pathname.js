@@ -8,5 +8,6 @@ export const pathname = {
     CHANGE_PASSWORD:"/change-password",
     UPLOADQUESTION:"/upload-question",
     COURSEINFORMATION:"/course-information",
-    CREATECOURSE:"create-course"
+    CREATECOURSE:"/create-course",
+    EDITCOURSE:"/edit-course"
 }

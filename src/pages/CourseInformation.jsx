@@ -10,8 +10,8 @@ import { get, post } from '~/database';
 import { toastError, toastSuccess } from '~/utils/toasty';
 import { rateValidation } from '~/middleware/rate';
 
-const pageNumber = 1;
 function CourseInformation() {
+    const [pageNumber, setPageNumber] = useState(1);
     const { id } = useParams();
     const [starNumber, setStarNumber] = useState(0);
     const [textComment, setTextComment] = useState('');
@@ -30,14 +30,29 @@ function CourseInformation() {
                 });
             }
         })();
-    }, [id]);
+    }, [id, pageNumber]);
+
+    console.log(comments, hasMore);
 
     const handleSubmitComment = async () => {
         try {
             const value = await rateValidation.validate({ rate: starNumber, comment: textComment, courseId: id });
             const response = await post('/rate/create-rate', value);
-            response?.status === 'ok' && toastSuccess('Tạo đánh giá thành công');
-            response?.response?.data?.message && toastError('Đã xãy ra lỗi vui lòng thử lại');
+
+            if (response?.status === 'ok') {
+                setComments((pre) => {
+                    const newComment = [...comments];
+                    if (comments.length >= 5) {
+                        newComment.pop();
+                    }
+                    newComment.unshift(response.data);
+                    return { ...pre, comments: newComment };
+                });
+                setTextComment('');
+                setStarNumber(0);
+                toastSuccess('Tạo đánh giá thành công');
+            }
+            response?.response?.data && toastError('Đã xãy ra lỗi vui lòng thử lại');
         } catch (error) {
             toastError(error.message);
         }
@@ -49,33 +64,43 @@ function CourseInformation() {
             <Line style="my-4" />
             <div className="space-y-4 w-full">
                 <h2 className="font-light text-normal text-center">Đánh giá</h2>
-
+                <Comment
+                    starNumber={starNumber}
+                    setStarNumber={setStarNumber}
+                    textComment={textComment}
+                    setTextComment={setTextComment}
+                    onClick={handleSubmitComment}
+                />
+                <div className="py-1"></div>
                 {comments.map((item, index) => (
                     <ShowComment
-                        key={index}
+                        rateId={item?._id}
+                        key={item?.id}
                         isFeedback
                         username={item?.profile?.name}
                         context={item.comment}
                         starNumber={item.rate}
                         avatar={item?.profile?.avatar}
+                        setComments={setComments}
+                        canRemove={item?.profile?._id === localStorage?.profileId}
                     />
                 ))}
-                {hasMore && (
+                {(hasMore || pageNumber > 1) && (
                     <div className="flex justify-center">
                         <div className="w-[70%]">
-                            <ShowMore title={'Xem thêm'} />
+                            <ShowMore
+                                onClick={() => {
+                                    if (hasMore) {
+                                        setPageNumber(pageNumber + 1);
+                                    } else setPageNumber(1);
+                                }}
+                                more={!hasMore}
+                                title={!hasMore ? 'Ẩn bớt' : 'Xem thêm'}
+                            />
                         </div>
                     </div>
                 )}
             </div>
-            {comments.length > 0 && <Line style="my-4" />}
-            <Comment
-                starNumber={starNumber}
-                setStarNumber={setStarNumber}
-                textComment={textComment}
-                setTextComment={setTextComment}
-                onClick={handleSubmitComment}
-            />
         </Container>
     );
 }

@@ -7,6 +7,7 @@ import { FaRegAddressBook } from 'react-icons/fa';
 import { IoIosNotificationsOutline } from 'react-icons/io';
 import avatar from '~/public/media/images/logo_node_react.png';
 import { IoIosSearch } from 'react-icons/io';
+import { PATH_MEDIA } from '~/utils/secret';
 
 const cx = classname.bind(styles);
 
@@ -36,7 +37,7 @@ function Header() {
                     </button>
                     <img
                         className="size-[40px] rounded-full cursor-pointer hover:opacity-50"
-                        src={avatar}
+                        src={`${PATH_MEDIA}/${localStorage?.avatar}`}
                         alt={'avatar'}
                     />
                 </div>
