@@ -37,13 +37,9 @@ function CreateCourseCom() {
         })();
     }, []);
 
-    console.log(level);
-
     useEffect(() => {
         updateDescription(descriptionState);
     }, [descriptionState]);
-
-    console.log(category);
 
     return (
         <div className="space-y-4 bg-container px-6 py-4 rounded-2xl">
@@ -80,9 +76,8 @@ function CreateCourseCom() {
                     />
                     {thumbnail && (
                         <UplaoadedFileCard
-                            fileName={thumbnail.name}
+                            fileName={thumbnail.name || 'Thumbnail'}
                             perLoad={100}
-                            size={transformSizeFile(thumbnail.size)}
                             onClick={() => updateThumbnail('')}
                         />
                     )}

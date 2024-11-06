@@ -3,6 +3,8 @@ import Home from '~/pages/Home';
 import Lading from '~/pages/Lading';
 import { pathname } from './pathname';
 import UploadQuestion from '~/pages/UploadQuestion';
+
+const FormEditLesson = React.lazy(() => import('~/pages/FormEditLesson'));
 const EditCourse = React.lazy(() => import('~/pages/EditCourse'));
 const CreateCourse = React.lazy(() => import('~/pages/CreateCourse'));
 const ForgotPassword = React.lazy(() => import('~/components/ForgotPassword'));
@@ -24,6 +26,7 @@ export const publicPath = [
     { pathname: pathname.COURSEINFORMATION + '/:id', Element: CourseInformation },
     { pathname: pathname.CREATECOURSE, Element: CreateCourse },
     { pathname: pathname.EDITCOURSE + '/:id', Element: EditCourse },
+    { pathname: pathname.EDITLESSON + '/:id', Element: FormEditLesson },
 ];
 
 export const privatePath = [];

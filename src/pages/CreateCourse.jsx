@@ -15,6 +15,7 @@ function CreateCourse() {
     const course = useCourse((state) => state.course);
     const lessons = useLesson((state) => state.lessons);
     const clearLessons = useLesson.getState().clearLessons;
+    const clearCourse = useCourse.getState().clear;
 
     const handlSubmitCourse = async () => {
         try {
@@ -78,6 +79,7 @@ function CreateCourse() {
                 }
 
                 clearLessons();
+                clearCourse();
                 const listErr = [];
                 listResponse.forEach((item, index) => {
                     if (item.status === 'error') listErr(index);

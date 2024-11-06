@@ -25,4 +25,5 @@ export const useCourse = create((set) => ({
     updateThumbnail: (value) => set((state) => ({ course: { ...state.course, thumbnail: value } })),
     updatePrice: (value) => set((state) => handlePrice(value, state)),
     updateCategory: (value) => set((state) => ({ course: { ...state.course, categoryId: value } })),
+    clear: () => set(() => ({ course: initState })),
 }));
