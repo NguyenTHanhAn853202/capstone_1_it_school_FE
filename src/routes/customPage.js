@@ -13,6 +13,7 @@ const Profile = React.lazy(() => import('~/pages/Profile'));
 const VerifyCodeSeccesfully = React.lazy(() => import('~/components/VerifyCodeSuccesfully'));
 const ChangePassowrd = React.lazy(() => import('~/pages/ChangePassword'));
 const CourseInformation = React.lazy(() => import('~/pages/CourseInformation'));
+const CourseManagement = React.lazy(() => import('~/pages/CourseManagement'));
 
 export const publicPath = [
     { pathname: pathname.HOME, Element: Home },
@@ -27,6 +28,7 @@ export const publicPath = [
     { pathname: pathname.CREATECOURSE, Element: CreateCourse },
     { pathname: pathname.EDITCOURSE + '/:id', Element: EditCourse },
     { pathname: pathname.EDITLESSON + '/:id', Element: FormEditLesson },
+    { pathname: pathname.COURSEMANAGEMENT, Element: CourseManagement },
 ];
 
 export const privatePath = [];

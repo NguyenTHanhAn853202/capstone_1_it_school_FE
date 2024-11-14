@@ -43,7 +43,7 @@ function EditLesson({ numberLesson = 0, title, lessonId, setLessonsTitle }) {
     };
     return (
         <>
-            <div className="space-y-4 px-6 py-4">
+            <div className=" px-6 py-4">
                 <div>
                     <div className="flex justify-between items-center pb-2">
                         <h2>Bài {numberLesson + 1}</h2>

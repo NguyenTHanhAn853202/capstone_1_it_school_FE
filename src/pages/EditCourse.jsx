@@ -9,7 +9,9 @@ import CreateLesson from '~/components/CreateLesson';
 import EditLesson from '~/components/EditLesson';
 import { useCourse } from '~/context/courseState';
 import { useLesson, useUpdateLesson } from '~/context/lesson';
-import { get } from '~/database';
+import { get, post } from '~/database';
+import { handleAssignmentXLSX, handleInteractionAssignmentXLSX } from '~/utils/handleAssignment';
+import { toastError } from '~/utils/toasty';
 
 const renDefaultLesson = () => ({
     id: Date.now(),
@@ -32,16 +34,17 @@ function EditCourse() {
             updateCategory: state.updateCategory,
         }),
     );
+    const { title, description, price, level, thumbnail, categoryId } = useCourse((state) => state.course);
+
+    console.log({ title, description, price, level, thumbnail, categoryId });
+
     const { id } = useParams();
     const [lessonstitle, setLessonsTitle] = useState([]);
     const [lessons, setLessons] = useState([]);
 
-    console.log(lessons);
-
     useEffect(() => {
         (async () => {
             const resCourse = await get(`/course/get-course/${id}`);
-
             if (resCourse?.data) {
                 const data = resCourse.data;
                 updateTitle(data?.title);
@@ -56,9 +59,53 @@ function EditCourse() {
         })();
     }, [id]);
 
-    const handleSubmit = () => {
-        console.log(lessons);
-        
+    const handleSubmit = async () => {
+        try {
+            const listPromise = [];
+            for (let index = 0; index < lessons.length; index++) {
+                const element = lessons[index];
+                const assitnment = element.assignment?.name
+                    ? await handleAssignmentXLSX(element.assignment)
+                    : element.assignment;
+                const interactionAssignment = element.interactionAssignment?.name
+                    ? await handleInteractionAssignmentXLSX(element.interactionAssignment)
+                    : element.interactionAssignment;
+                const formData = new FormData();
+                formData.append('title', element.title);
+                formData.append('context', element.context);
+                formData.append('quizLesson', JSON.stringify(assitnment));
+                formData.append('quizVideo', JSON.stringify(interactionAssignment));
+                formData.append('courseId', id);
+                formData.append('video', element.video);
+                formData.append('thumbnail', element.thumbnail);
+
+                const res = post('/lesson/create', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+
+                listPromise.push(res);
+            }
+            const courseData = new FormData();
+            courseData.append('title', title);
+            courseData.append('description', description);
+            courseData.append('categoryId', categoryId);
+            courseData.append('level', level);
+            courseData.append('price', price);
+            courseData.append('image', thumbnail);
+            courseData.append('courseId', id);
+            const courseUpdate = await post('/course/update-course', courseData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            console.log(courseUpdate);
+
+            console.log(await Promise.all(listPromise));
+        } catch (error) {
+            toastError('Đã xãy ra lỗi');
+        }
     };
 
     return (
