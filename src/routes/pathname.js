@@ -11,4 +11,5 @@ export const pathname = {
     CREATECOURSE: '/create-course',
     EDITCOURSE: '/edit-course',
     EDITLESSON: '/edit-lesson',
+    LESSON:"/lesson"
 };
