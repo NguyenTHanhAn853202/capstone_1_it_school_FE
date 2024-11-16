@@ -12,4 +12,5 @@ export const pathname = {
     EDITCOURSE: '/edit-course',
     EDITLESSON: '/edit-lesson',
     COURSEMANAGEMENT: '/course-management',
+    LESSON: '/lesson',
 };

@@ -3,6 +3,7 @@ import Home from '~/pages/Home';
 import Lading from '~/pages/Lading';
 import { pathname } from './pathname';
 import UploadQuestion from '~/pages/UploadQuestion';
+const  Lesson = React.lazy(()=>import('~/pages/Lesson')) 
 
 const FormEditLesson = React.lazy(() => import('~/pages/FormEditLesson'));
 const EditCourse = React.lazy(() => import('~/pages/EditCourse'));
@@ -29,6 +30,7 @@ export const publicPath = [
     { pathname: pathname.EDITCOURSE + '/:id', Element: EditCourse },
     { pathname: pathname.EDITLESSON + '/:id', Element: FormEditLesson },
     { pathname: pathname.COURSEMANAGEMENT, Element: CourseManagement },
+    {pathname:pathname.LESSON + "/:id",Element:Lesson}
 ];
 
 export const privatePath = [];
