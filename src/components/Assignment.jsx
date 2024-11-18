@@ -1,76 +1,42 @@
 import { Button } from 'antd';
 import Dialog from './Dialog';
-import { useState } from 'react';
-import { toastError } from '~/utils/toasty';
+import { useEffect, useState } from 'react';
+import { toastError, toastSuccess } from '~/utils/toasty';
 import { FaTimes } from 'react-icons/fa';
-
-const quessions = [
-    {
-        question: 'What is the capital of France?',
-        answers: ['Paris', 'London', 'Berlin'],
-        correctAnswer: 'Paris',
-    },
-    {
-        question: 'What is 5 + 3?',
-        answers: ['5', '8', '10'],
-        correctAnswer: '8',
-    },
-    {
-        question: "Who wrote 'Hamlet'?",
-        answers: ['William Shakespeare', 'Mark Twain', 'Jane Austen'],
-        correctAnswer: 'William Shakespeare',
-    },
-    {
-        question: 'What is the boiling point of water at sea level?',
-        answers: ['50°C', '100°C', '150°C'],
-        correctAnswer: '100°C',
-    },
-    {
-        question: 'Which planet is known as the Red Planet?',
-        answers: ['Earth', 'Mars', 'Venus'],
-        correctAnswer: 'Mars',
-    },
-    {
-        question: 'What is the largest ocean on Earth?',
-        answers: ['Atlantic Ocean', 'Indian Ocean', 'Pacific Ocean'],
-        correctAnswer: 'Pacific Ocean',
-    },
-    {
-        question: 'Who painted the Mona Lisa?',
-        answers: ['Leonardo da Vinci', 'Vincent van Gogh', 'Pablo Picasso'],
-        correctAnswer: 'Leonardo da Vinci',
-    },
-    {
-        question: 'What is the primary programming language for web development?',
-        answers: ['Python', 'JavaScript', 'Java'],
-        correctAnswer: 'JavaScript',
-    },
-    {
-        question: 'What is the chemical symbol for gold?',
-        answers: ['Au', 'Ag', 'Fe'],
-        correctAnswer: 'Au',
-    },
-    {
-        question: 'Which country is known as the Land of the Rising Sun?',
-        answers: ['China', 'Japan', 'Thailand'],
-        correctAnswer: 'Japan',
-    },
-];
+import { useParams } from 'react-router-dom';
+import { get, post } from '~/database';
 
 function Assignment() {
     const [openDialog, setOpenDialog] = useState(false);
     const [loadingConfirm, setLoadingConfirm] = useState(false);
     const [answers, setAnswers] = useState([]);
+    const [questions, setQuestions] = useState([]);
+    const lessonId = useParams().id;
+    const [score, setScore] = useState(null);
     const handleOpenDialog = () => {
         setOpenDialog(true);
     };
+    const [colorScore, setColorScore] = useState('');
     const handleSubmitQuestion = async () => {
         try {
-            console.log(answers);
-
-            if (answers.length < quessions.length) {
+            if (answers.length < questions.length) {
                 toastError('Vui lòng trả lời đầy đủ các câu hỏi');
                 return;
+            }
+            const response = await post(`/quiz/submit-question`, {
+                answers,
+                lessonId,
+            });
+            if (response.status === 'ok') {
+                const data = response.data;
+                if (Math.floor(data.correctAnswer / data.totalQuestion) >= 0.8) {
+                    toastSuccess('Bạn đã vượt qua bài kiễm tra');
+                    setColorScore('text-button_green');
+                } else {
+                    toastError('Bạn không vượt qua bài kiểm tra');
+                    setColorScore('text-red');
+                }
+                setScore(data.correctAnswer + '/' + data.totalQuestion);
             }
             //call api
         } catch (error) {
@@ -88,7 +54,23 @@ function Assignment() {
             return arr;
         });
     };
-    console.log(answers);
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const response = await get(`/quiz/quiz-no-interaction/${lessonId}`);
+                if (response.status === 'ok') {
+                    console.log(response.data);
+
+                    setQuestions(response.data);
+                } else {
+                    console.log('Lấy câu h��i thất bại');
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        })();
+    }, [lessonId]);
 
     return (
         <div className="space-y-2">
@@ -100,40 +82,41 @@ function Assignment() {
                 title={'Gửi bài'}
                 handleOk={handleSubmitQuestion}
             />
-            {quessions.map((question, index) => (
+            {questions.map((question, index) => (
                 <div key={index}>
                     <p className="font-bold">{`Câu ${index + 1}. ${question.question}`}</p>
                     <ul className="space-y-[2px]">
-                        {question.answers.map((answer, i) => (
+                        {question.answer.map((item, i) => (
                             <li className="ml-4 flex relative items-center" key={i}>
-                                {i === 1 && (
-                                    <span className='absolute left-[-15px]'>
+                                {/* {i === 1 && (
+                                    <span className="absolute left-[-15px]">
                                         <FaTimes className="text-red" />
                                     </span>
-                                )}
+                                )} */}
                                 <input
-                                    onChange={(e) => handleChooseAnswer(question._id || index, answer, index)}
+                                    onChange={(e) => handleChooseAnswer(question._id, e.target.value, index)}
                                     className="accent-button_green size-[14px] checked:outline-button_green border-button_green"
                                     id={'answer' + index + '' + i}
                                     type="radio"
                                     name={`question${index + 1}`}
-                                    value={answer}
+                                    value={item}
                                 />
                                 <label
                                     className="ml-1 cursor-pointer font-thin opacity-80 italic"
                                     htmlFor={'answer' + index + '' + i}
                                 >
-                                    {answer}
+                                    {item}
                                 </label>
                             </li>
                         ))}
                     </ul>
                 </div>
             ))}
-            <div className="">
+            <div className="space-x-2">
                 <Button onClick={handleOpenDialog} className="hover:border-button_green">
                     Hoàn thành
                 </Button>
+                {score && <span className={colorScore}>{score} điểm</span>}
             </div>
         </div>
     );

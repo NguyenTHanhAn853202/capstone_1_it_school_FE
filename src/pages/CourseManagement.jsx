@@ -95,7 +95,11 @@ function CourseManagement() {
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
     const [confirmLoading, setConfirmLoading] = useState(false);
+    const [confirmLoadings, setConfirmLoadings] = useState(false);
+
     const [openDialog, setOpenDialog] = useState(false);
+    const [openDialogs, setOpenDialogs] = useState(false);
+
     const [courseId, setCourseId] = useState(null);
     const [courses, setCourses] = useState([]);
     const [courseIds, setCourseIds] = useState([]);
@@ -130,7 +134,7 @@ function CourseManagement() {
     };
     const handleDeleteCourses = async () => {
         try {
-            setConfirmLoading(true);
+            setConfirmLoadings(true);
             // const response = await destroy(`/course/delete-course/${courseId}`);
             const response = await post('/course/delete-courses/', { courseIds: courseIds });
             if (response.status === 'ok') {
@@ -144,8 +148,8 @@ function CourseManagement() {
         } catch (error) {
             toastError('Xóa thất bại');
         } finally {
-            setConfirmLoading(false);
-            setOpenDialog(false);
+            setConfirmLoadings(false);
+            setOpenDialogs(false);
             setCourseIds([]);
         }
     };
@@ -159,7 +163,7 @@ function CourseManagement() {
             toastError('Vui lòng chọn ít nhất một khóa học để xóa');
             return;
         }
-        setOpenDialog(true);
+        setOpenDialogs(true);
     };
 
     useEffect(() => {
@@ -174,7 +178,6 @@ function CourseManagement() {
                     numberStudents: item.studentNumber,
                     level: item.level,
                     id: item._id,
-                    no: index + 1,
                 }));
                 setCourses(data);
             }
@@ -182,25 +185,19 @@ function CourseManagement() {
     }, []);
     const columns = [
         {
-            title: 'STT',
-            dataIndex: 'no',
-            key: 'no',
-            width: '5%',
-        },
-        {
             title: 'Tên khóa học',
             dataIndex: 'name',
             key: 'name',
             filterSearch: true,
             ...customeSearch(setSearchText, setSearchedColumn, searchInput)('name'),
-            width: '30%',
+            width: '40%',
             // sortDirections: ['descend'],
         },
         {
             title: 'Loại',
             dataIndex: 'category',
             key: 'category',
-            width: '20%',
+            width: '15%',
         },
         {
             title: 'Giá',
@@ -271,17 +268,17 @@ function CourseManagement() {
             <Dialog
                 title={'Xóa nhiều khóa học'}
                 content={'Bạn có chắc chắn muốn xóa các khóa học này'}
-                open={openDialog}
-                setOpen={setOpenDialog}
+                open={openDialogs}
+                setOpen={setOpenDialogs}
                 handleOk={handleDeleteCourses}
-                confirmLoading={confirmLoading}
+                confirmLoading={confirmLoadings}
             />
             <h1>Danh sách khóa học</h1>
             <Flex gap="middle" className="my-3">
                 <Button onClick={handleShowDialoglist} styles="!text-10 !w-[80px] !py-0 !h-[30px]">
                     Xóa
                 </Button>
-                <Link to={pathname.CREATECOURSE} className='bg-button_green text-white px-2 leading-[30px] rounded-2xl'>
+                <Link to={pathname.CREATECOURSE} className="bg-button_green text-white px-2 leading-[30px] rounded-2xl">
                     Thêm khóa học
                 </Link>
             </Flex>

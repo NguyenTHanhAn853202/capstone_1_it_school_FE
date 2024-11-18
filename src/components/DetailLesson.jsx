@@ -1,4 +1,4 @@
-import { Segmented } from 'antd';
+import { Button, Radio, Segmented, Space } from 'antd';
 import Avatar from './Avatar';
 import avatar from '~/public/media/images/default_avatar.jpg';
 import VideoCard from './VideoCard';
@@ -11,11 +11,13 @@ import { CiPlay1 } from 'react-icons/ci';
 import { FaRegPlayCircle } from 'react-icons/fa';
 import Assignment from './Assignment';
 import { get } from '~/database';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { PATH_MEDIA } from '~/utils/secret';
 
 function DetailLesson() {
     const lessonId = useParams().id;
+    const [listLessons, setListLessons] = useState([]);
+    // const { courseId = '673898f1716609e4efc7e4a8' } = useLocation().state;
     const arr = new Array(10).fill(null);
     const [isMoreDescriptor, setIsMoreDescriptor] = useState(null);
     const [clamp, setClamp] = useState('line-clamp-6');
@@ -31,7 +33,11 @@ function DetailLesson() {
         title: '',
         videoUrl: '',
         position: 1,
+        course: '',
     });
+    const [quiz, setQuiz] = useState([]);
+    const [currentQuiz, setCurrentQuiz] = useState({});
+
     useEffect(() => {
         setIsMoreDescriptor(hiddenText(descriptionRef.current));
         var player = dashjs.MediaPlayer().create();
@@ -49,8 +55,35 @@ function DetailLesson() {
             if (response?.status === 'ok') {
                 setVideoData(response.data);
             }
+            const interactionAssignment = await get('/quiz/quiz-interaction/' + lessonId);
+            interactionAssignment.status === 'ok' && setQuiz(interactionAssignment.data);
         })();
     }, [lessonId]);
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const response = await get(`/lesson/lessons-of-course/${videoData.course?._id}`);
+                if (response?.status === 'ok') {
+                    const data = response.data;
+                    setListLessons(data);
+                } else {
+                    console.log('Error get course');
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        })();
+    }, [videoData.course?._id]);
+    const handleQuizInteraction = (e) => {
+        const value = e.target;
+        quiz.forEach((item) => {
+            console.log(item.time, value.currentTime);
+            if (value.currentTime + 0.1 > item.time && item.time > value.currentTime - 0.1) {
+                setQuiz((pre) => pre.filter((_) => _._id !== item._id));
+            }
+        });
+    };
 
     return (
         <div className="flex space-x-5">
@@ -60,7 +93,7 @@ function DetailLesson() {
                         className="relative h-full"
                         onClick={() => {
                             setthumbnail(false);
-                            videoRef.current.play();
+                            // videoRef.current.play();
                         }}
                     >
                         <img
@@ -71,7 +104,23 @@ function DetailLesson() {
                             <FaRegPlayCircle className="text-white text-[3rem]" />
                         </button>
                     </div>
+                    <div className="w-full h-full bg-mark absolute top-0 z-50 flex justify-center items-center">
+                        <div className="w-5/6 h-5/6 bg-white p-6 rounded-xl">
+                            <h4>
+                                Câu 1: Ai là người đã cầm quân đánh trận rạch gầm - xoài mút, đại phá quân xiên trong
+                                nữa ngày?
+                            </h4>
+                            <Space direction="vertical" className="mt-4 ml-3">
+                                <Radio>Đáp án câu 1</Radio>
+                                <Radio>Đáp án câu 2</Radio>
+                                <Radio>Đáp án câu 3</Radio>
+                                
+                            </Space>
+                            <Button className='block w-[200px]'>Tiếp</Button>
+                        </div>
+                    </div>
                     <video
+                        onTimeUpdate={handleQuizInteraction}
                         ref={videoRef}
                         controls
                         className={`w-full h-full absolute top-0 ${thumbnail && 'hidden'}`}
@@ -94,23 +143,26 @@ function DetailLesson() {
                     {toggleDescription ? (
                         <Assignment />
                     ) : (
-                        <p
-                            ref={descriptionRef}
-                            className={`${clamp}`}
-                            dangerouslySetInnerHTML={{ __html: videoData?.context || '' }}
-                        ></p>
+                        <div>
+                            <p
+                                ref={descriptionRef}
+                                className={`${clamp}`}
+                                dangerouslySetInnerHTML={{ __html: videoData?.context || '' }}
+                            ></p>
+                            {isMoreDescriptor && (
+                                <span
+                                    onClick={() => {
+                                        setIsMoreDescriptor(false);
+                                        setClamp('line-clamp-none');
+                                    }}
+                                    className="italic opacity-60 cursor-pointer"
+                                >
+                                    Xem thêm
+                                </span>
+                            )}
+                        </div>
                     )}
-                    {isMoreDescriptor && (
-                        <span
-                            onClick={() => {
-                                setIsMoreDescriptor(false);
-                                setClamp('line-clamp-none');
-                            }}
-                            className="italic opacity-60 cursor-pointer"
-                        >
-                            Xem thêm
-                        </span>
-                    )}
+
                     {clamp === 'line-clamp-none' && (
                         <span
                             onClick={() => {
@@ -125,11 +177,20 @@ function DetailLesson() {
                 </div>
                 <CommentLesson />
             </div>
-            <div className="flex-1 space-y-2 max-h-[400px] overflow-hidden overflow-y-scroll border-b border-b-2 border-b-mark">
-                <h2>Danh sách bài học</h2>
-                {arr.map((_, i) => (
-                    <VideoCard image={image} to={''} time={120} title={'2. Hello world co ban'} view={60} key={i} />
-                ))}
+            <div className="flex-1 max-h-[400px]  border-b border-b-2 border-b-mark">
+                <h2 className="h-[30px] text-12 leading-[30px]">Danh sách bài học</h2>
+                <div className="overflow-hidden max-h-[370px] overflow-y-scroll space-y-2">
+                    {listLessons.map((item, i) => (
+                        <VideoCard
+                            image={item.thumbnailUrl}
+                            id={item._id}
+                            time={120}
+                            title={`${item.position}. ${item.title}`}
+                            view={60}
+                            key={i}
+                        />
+                    ))}
+                </div>
             </div>
         </div>
     );

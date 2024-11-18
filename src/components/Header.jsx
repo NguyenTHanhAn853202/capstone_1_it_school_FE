@@ -15,9 +15,10 @@ function Header() {
     const handleToggle = useToggleMode((state) => state.toggleDarkMode);
     return (
         <Container
-            style={
-                'h-[70px] w-[80%] 1xl:w-[85%] xl:w-header fixed right-0 py-[10px] border-dark border-b bg-white  z-50'
-            }
+            style={'flex items-center h-full'}
+            // style={
+            //     'h-[70px] w-[80%] 1xl:w-[85%] xl:w-header fixed right-0 py-[10px] border-dark border-b bg-white  z-50'
+            // }
         >
             <div className="flex justify-between">
                 <img src={logo} className="block w-[40px] h-[40px]" />

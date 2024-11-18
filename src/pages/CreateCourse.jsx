@@ -51,11 +51,15 @@ function CreateCourse() {
                 const listLesson = lessons.map((item) => ({ ...item }));
                 for (let index = 0; index < listLesson.length; index++) {
                     const element = listLesson[index];
+                    console.log(element.assignment);
+
                     const assigment = await handleAssignmentXLSX(element.assignment);
                     const interactionAssignment = await handleInteractionAssignmentXLSX(element.interactionAssignment);
                     element.assigment = assigment;
                     element.interactionAssignment = interactionAssignment;
                 }
+
+                console.log('debug');
 
                 const listResponse = [];
                 for (let index = 0; index < listLesson.length; index++) {
@@ -77,7 +81,6 @@ function CreateCourse() {
                     });
                     listResponse.push(data);
                 }
-
                 clearLessons();
                 clearCourse();
                 const listErr = [];
@@ -88,6 +91,8 @@ function CreateCourse() {
                 else toastError('Đã xãy ra lỗi ở bài: ' + listErr.join(', '));
             }
         } catch (error) {
+            console.log(error.message);
+
             toastError(error.message);
         } finally {
             console.log(course);

@@ -19,6 +19,7 @@ function CommentLesson({}) {
     const lessonId = useParams().id;
     useEffect(() => {
         (async () => {
+            setComments({ comments: [], count: 0 });
             try {
                 const response = await get(`/user/get-comments/${lessonId}?page=1`);
                 response.status = 'ok' && setComments(response.data);
@@ -26,7 +27,8 @@ function CommentLesson({}) {
                 console.log(error);
             }
         })();
-    }, []);
+    }, [lessonId]);
+    console.log(comments[0]?.comment);
 
     const hanldeMoreComment = async () => {
         if (!showMore) {
@@ -44,25 +46,33 @@ function CommentLesson({}) {
             response.status = 'ok' && setComments(response.data);
             setPage(1);
         }
-        count <= comments.length ? setShowMore(false) : setShowMore(true);
     };
+    useEffect(() => {
+        setShowMore(count === comments.length);
+    }, [count, comments.length]);
 
     return (
         <div className="rounded-xl space-y-4">
             <h1 className="font-bold text-12">{count} bình luận</h1>
-            <CommentLS avatar={avatar} />
+            <CommentLS setComments={setComments} avatar={avatar} />
             <div className="mt-4"></div>
             <div className="space-y-2">
                 {comments.map((item) => (
                     <ShowCommentLS
+                        key={item._id}
+                        commentId={item?.comment?._id}
+                        numberReply={item?.comment?.numberReply}
                         avatarUrl={`${PATH_MEDIA}${item?.comment?.profile?.avatar}`}
+                        profileId={item?.comment?.profile?._id}
                         context={item?.comment?.comment}
                         time={'16 giờ'}
                         username={item?.comment?.profile?.name}
                     />
                 ))}
 
-                <ShowMore onClick={hanldeMoreComment} title={showMore ? 'Đóng' : 'Xem thêm'} more={showMore} />
+                {count > 5 && (
+                    <ShowMore onClick={hanldeMoreComment} title={showMore ? 'Đóng' : 'Xem thêm'} more={showMore} />
+                )}
             </div>
         </div>
     );

@@ -2,20 +2,22 @@ import { useParams } from 'react-router-dom';
 import Avatar from './Avatar';
 import { useState } from 'react';
 import { Button } from 'antd';
-import { post } from '~/database';
+import { get, post } from '~/database';
 
-function CommentLS({ notAvatar = false, avatar, placeholder = 'Nhập bình luận' }) {
+function CommentLS({ notAvatar = false, avatar, placeholder = 'Nhập bình luận', setComments }) {
     const lessonId = useParams().id;
-    console.log(lessonId);
-
     const [comment, setComment] = useState('');
-    const handleSubmitComment = async () => {
+    const handleSubmitComment = async (e) => {
+        e.preventDefault();
         try {
             const response = await post(`/user/comment`, {
                 lessonId,
                 comment: comment,
             });
-            console.log(response);
+            if (response.status === 'ok') {
+                const data = await get(`/user/get-comments/${lessonId}?page=1`);
+                data.status = 'ok' && setComments(data.data);
+            }
         } catch (error) {
             console.error(error);
         } finally {
@@ -23,7 +25,7 @@ function CommentLS({ notAvatar = false, avatar, placeholder = 'Nhập bình lu�
         }
     };
     return (
-        <div className="flex items-end space-x-2 pb-3">
+        <form onSubmit={(e) => handleSubmitComment(e)} className="flex items-end space-x-2 pb-3">
             {!notAvatar && <Avatar style={'!size-[40px]'} url={avatar} />}
             <div className="border-b border-b-dark w-full">
                 <input
@@ -35,10 +37,12 @@ function CommentLS({ notAvatar = false, avatar, placeholder = 'Nhập bình lu�
                     className="border-b border-b-2 border-b-dark w-full text-[0.9rem]"
                 />
             </div>
-            <Button onClick={handleSubmitComment} className="px-3">
-                Gửi
-            </Button>
-        </div>
+            <input
+                type="submit"
+                className="px-4 py-[2px] cursor-pointer  bg-button_green rounded-lg text-white text-[0.9rem]"
+                value={'Gửi'}
+            />
+        </form>
     );
 }
 

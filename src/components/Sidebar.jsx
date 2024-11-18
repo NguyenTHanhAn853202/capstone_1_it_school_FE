@@ -15,7 +15,7 @@ const listNav = [
 ];
 function SideBar() {
     return (
-        <nav className="xl:w-side_bar 1xl:w-[15%] w-[20%] h-screen fixed top-0 bg-side_bar z-50">
+        <nav className="min-h-screen h-full top-0 bg-side_bar z-50">
             <h1 className="text-center h-[70px] leading-[70px] font-bold text-[1.5rem]">ITSchool</h1>
             <ul className="pl-[20px] pt-5 pr-[10px]">
                 {listNav.map((item, index) => (
