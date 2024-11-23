@@ -51,15 +51,13 @@ function CreateCourse() {
                 const listLesson = lessons.map((item) => ({ ...item }));
                 for (let index = 0; index < listLesson.length; index++) {
                     const element = listLesson[index];
-                    console.log(element.assignment);
-
-                    const assigment = await handleAssignmentXLSX(element.assignment);
-                    const interactionAssignment = await handleInteractionAssignmentXLSX(element.interactionAssignment);
+                    const assigment = element.assignment ? await handleAssignmentXLSX(element.assignment) : null;
+                    const interactionAssignment = element.interactionAssignment
+                        ? await handleInteractionAssignmentXLSX(element.interactionAssignment)
+                        : null;
                     element.assigment = assigment;
                     element.interactionAssignment = interactionAssignment;
                 }
-
-                console.log('debug');
 
                 const listResponse = [];
                 for (let index = 0; index < listLesson.length; index++) {
@@ -81,8 +79,8 @@ function CreateCourse() {
                     });
                     listResponse.push(data);
                 }
-                clearLessons();
-                clearCourse();
+                // clearLessons();
+                // clearCourse();
                 const listErr = [];
                 listResponse.forEach((item, index) => {
                     if (item.status === 'error') listErr(index);
@@ -92,8 +90,6 @@ function CreateCourse() {
             }
         } catch (error) {
             console.log(error.message);
-
-            toastError(error.message);
         } finally {
             console.log(course);
         }

@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import Avatar from '~/components/Avatar';
 import Button from '~/components/Button';
 import ShowMore from '~/components/ShowMore';
 import Star from '~/components/Star';
-import { get } from '~/database';
+import { get, post } from '~/database';
 import avatarDefault from '~/public/media/images/default_avatar.jpg';
 import { formatPrice } from '~/utils/formatPrice';
 import { PATH_MEDIA } from '~/utils/secret';
-
+import { socket } from '~/utils/socket';
+import { toastInfo, toastSuccess } from '~/utils/toasty';
 const listLessons = ['Làm quen với HTML', 'Làm quen với HTML', 'Làm quen với HTML'];
 
 function CourseInfo() {
@@ -16,11 +17,19 @@ function CourseInfo() {
     const { id } = useParams();
     const [courseInfo, setCourseInfo] = useState();
     const [lessons, setLessons] = useState([]);
+    const [isEnroll, setIsEnroll] = useState(false);
+    const navigate = useNavigate();
+
+    socket.on(`payment-${localStorage.profileId}`, (data) => {
+        if (data.code === 100) {
+            toastSuccess('Thanh Toán thành công');
+        }
+    });
 
     useEffect(() => {
         (async () => {
             try {
-                const response = await get(`/course/get-course/${id}`);
+                const response = await get(`/course/get-course/${id}?userId=${localStorage.userId}`);
                 const lessonsResponse = await get(`/lesson/lessons/${id}`);
                 if (lessonsResponse.status === 'ok') {
                     const data = lessonsResponse.data;
@@ -30,12 +39,24 @@ function CourseInfo() {
                         setLessons(data);
                     }
                 }
-                response.status === 'ok' && setCourseInfo(response.data);
+                if (response.status === 'ok') {
+                    setCourseInfo(response.data.course);
+                    setIsEnroll(response.data.enroll);
+                }
             } catch (error) {
                 console.log(error);
             }
         })();
     }, [id]);
+
+    const handleEnroll = async () => {
+        if (isEnroll) {
+            lessons[0]?._id ? navigate('/lesson/' + lessons[0]?._id) : toastInfo('Khóa học chưa có bài học nào');
+        } else {
+            const response = await get(`/payment/vnpay?amount=${courseInfo.price}&bankOrder=${courseInfo._id}`);
+            response.status === 'ok' && window.open(response.data.url, '_blank');
+        }
+    };
 
     const handleMoreLessons = async () => {
         const lessonsResponse = await get(`/lesson/lessons/${id}`);
@@ -80,7 +101,7 @@ function CourseInfo() {
                         </ul>
                         {lessons.map((item, index) => (
                             <li key={index}>
-                                <Link>{`${index + 1}. ${item?.title}`}</Link>
+                                <p>{`${index + 1}. ${item?.title}`}</p>
                             </li>
                         ))}
                         {lessons.length > 3 && (
@@ -97,11 +118,11 @@ function CourseInfo() {
                 <div className="flex-1 space-y-3">
                     <img
                         src={`${PATH_MEDIA}/${courseInfo?.image}`}
-                        className="w-[290] h-[180] block object-cover m-auto"
+                        className="w-[290px] h-[180px] block object-cover m-auto"
                     />
                     <h4 className="text-center text-red font-bold">{`Giá: ${formatPrice(courseInfo?.price)}VNĐ`}</h4>
                     <div className="flex justify-center">
-                        <Button>Đăng ký ngay</Button>
+                        <Button onClick={handleEnroll}>{isEnroll ? 'Đến khóa học' : 'Đăng ký ngay'}</Button>
                     </div>
                 </div>
             </div>

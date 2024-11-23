@@ -1,10 +1,10 @@
 import React from 'react';
-import Home from '~/pages/Home';
 import Lading from '~/pages/Lading';
 import { pathname } from './pathname';
 import UploadQuestion from '~/pages/UploadQuestion';
-const  Lesson = React.lazy(()=>import('~/pages/Lesson')) 
-
+const Store = React.lazy(() => import('~/pages/Store'));
+const HomePage = React.lazy(() => import('~/pages/HomePage'));
+const Lesson = React.lazy(() => import('~/pages/Lesson'));
 const FormEditLesson = React.lazy(() => import('~/pages/FormEditLesson'));
 const EditCourse = React.lazy(() => import('~/pages/EditCourse'));
 const CreateCourse = React.lazy(() => import('~/pages/CreateCourse'));
@@ -17,7 +17,7 @@ const CourseInformation = React.lazy(() => import('~/pages/CourseInformation'));
 const CourseManagement = React.lazy(() => import('~/pages/CourseManagement'));
 
 export const publicPath = [
-    { pathname: pathname.HOME, Element: Home },
+    { pathname: pathname.HOME, Element: HomePage },
     { pathname: pathname.EXPERIENCE, Element: Lading, noLayout: true },
     { pathname: pathname.FORGOT_PASSWORD, Element: ForgotPassword },
     { pathname: pathname.VERIFY_CODE, Element: VerifyCode },
@@ -30,7 +30,8 @@ export const publicPath = [
     { pathname: pathname.EDITCOURSE + '/:id', Element: EditCourse },
     { pathname: pathname.EDITLESSON + '/:id', Element: FormEditLesson },
     { pathname: pathname.COURSEMANAGEMENT, Element: CourseManagement },
-    {pathname:pathname.LESSON + "/:id",Element:Lesson}
+    { pathname: pathname.LESSON + '/:id', Element: Lesson },
+    { pathname: pathname.STORE, Element: Store },
 ];
 
 export const privatePath = [];

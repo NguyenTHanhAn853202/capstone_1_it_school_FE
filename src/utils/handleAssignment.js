@@ -11,12 +11,17 @@ export function handleAssignmentXLSX(file) {
                 const sheetName = workbook.SheetNames[0];
                 const worksheet = workbook.Sheets[sheetName];
                 const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-                const questionsArray = jsonData.map((row) => ({
-                    question: row[0],
-                    answer: [row[1], row[2], row[3]],
-                    correctAnswer: row[4],
-                    explaination: row[5],
-                }));
+                const questionsArray = [];
+                jsonData.forEach((row) => {
+                    if (row[0] && row[1] && row[2] && row[3] && row[4]) {
+                        questionsArray.push({
+                            question: row[0],
+                            answer: [row[1], row[2], row[3]],
+                            correctAnswer: row[4],
+                            explaination: row[5],
+                        });
+                    }
+                });
 
                 resolve(questionsArray);
             } catch (error) {
@@ -40,13 +45,18 @@ export function handleInteractionAssignmentXLSX(file) {
                 const sheetName = workbook.SheetNames[0];
                 const worksheet = workbook.Sheets[sheetName];
                 const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-                const questionsArray = jsonData.map((row) => ({
-                    question: row[0],
-                    answer: [row[1], row[2], row[3]],
-                    correctAnswer: row[4],
-                    explaination: row[5],
-                    time: +row[6],
-                }));
+                const questionsArray = [];
+                jsonData.forEach((row) => {
+                    if (row[0] && row[1] && row[2] && row[3] && row[4] && row[6]) {
+                        questionsArray.push({
+                            question: row[0],
+                            answer: [row[1], row[2], row[3]],
+                            correctAnswer: row[4],
+                            explaination: row[5],
+                            time: +row[6],
+                        });
+                    }
+                });
 
                 resolve(questionsArray);
             } catch (error) {

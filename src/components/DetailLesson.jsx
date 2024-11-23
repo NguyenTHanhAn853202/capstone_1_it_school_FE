@@ -10,9 +10,10 @@ import dashjs from 'dashjs';
 import { CiPlay1 } from 'react-icons/ci';
 import { FaRegPlayCircle } from 'react-icons/fa';
 import Assignment from './Assignment';
-import { get } from '~/database';
+import { get, post } from '~/database';
 import { useLocation, useParams } from 'react-router-dom';
 import { PATH_MEDIA } from '~/utils/secret';
+import { toastInfo } from '~/utils/toasty';
 
 function DetailLesson() {
     const lessonId = useParams().id;
@@ -36,13 +37,16 @@ function DetailLesson() {
         course: '',
     });
     const [quiz, setQuiz] = useState([]);
-    const [currentQuiz, setCurrentQuiz] = useState({});
+    const [currentQuiz, setCurrentQuiz] = useState(null);
+    const [answer, setAnswer] = useState(null);
+    const [lastTime, setLastTime] = useState(0);
+    const [maxTime, setMaxTime] = useState(0);
 
     useEffect(() => {
         setIsMoreDescriptor(hiddenText(descriptionRef.current));
         var player = dashjs.MediaPlayer().create();
         var url = PATH_MEDIA + videoData.videoUrl;
-        player.initialize(videoRef.current, url, true);
+        player.initialize(videoRef.current, url, false);
     }, [JSON.stringify(videoData)]);
 
     useEffect(() => {
@@ -58,6 +62,9 @@ function DetailLesson() {
             const interactionAssignment = await get('/quiz/quiz-interaction/' + lessonId);
             interactionAssignment.status === 'ok' && setQuiz(interactionAssignment.data);
         })();
+        setMaxTime(0);
+        setLastTime(0);
+        setCurrentQuiz(null);
     }, [lessonId]);
 
     useEffect(() => {
@@ -77,13 +84,47 @@ function DetailLesson() {
     }, [videoData.course?._id]);
     const handleQuizInteraction = (e) => {
         const value = e.target;
+        if (value.currentTime < lastTime + 1 || value.currentTime < maxTime) {
+            setLastTime(value.currentTime);
+        } else {
+            value.currentTime = lastTime;
+        }
+        if (value.currentTime > maxTime) {
+            setMaxTime(value.currentTime);
+        }
+
         quiz.forEach((item) => {
-            console.log(item.time, value.currentTime);
-            if (value.currentTime + 0.1 > item.time && item.time > value.currentTime - 0.1) {
+            if (value.currentTime + 1 > item.time && item.time > value.currentTime - 1) {
+                setCurrentQuiz(item);
+                videoRef.current.pause();
                 setQuiz((pre) => pre.filter((_) => _._id !== item._id));
             }
         });
+        console.log(value.currentTime);
     };
+    const handleSubmitAnswer = async () => {
+        if (!answer) {
+            toastInfo('Vui lòng chọn đáp án');
+            return;
+        }
+        try {
+            const response = await post('/quiz/submit-question-interaction', {
+                quizId: currentQuiz._id,
+                answer: answer,
+            });
+            if (response.status === 'ok' && response.data) {
+                videoRef.current.play();
+                setCurrentQuiz(null);
+            }
+            response.status === 'info' && toastInfo('Bạn đã chọn sai vui lòng chọn lại');
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
+        console.log(currentQuiz);
+    });
 
     return (
         <div className="flex space-x-5">
@@ -93,7 +134,7 @@ function DetailLesson() {
                         className="relative h-full"
                         onClick={() => {
                             setthumbnail(false);
-                            // videoRef.current.play();
+                            videoRef.current.play();
                         }}
                     >
                         <img
@@ -104,24 +145,33 @@ function DetailLesson() {
                             <FaRegPlayCircle className="text-white text-[3rem]" />
                         </button>
                     </div>
-                    <div className="w-full h-full bg-mark absolute top-0 z-50 flex justify-center items-center">
-                        <div className="w-5/6 h-5/6 bg-white p-6 rounded-xl">
-                            <h4>
-                                Câu 1: Ai là người đã cầm quân đánh trận rạch gầm - xoài mút, đại phá quân xiên trong
-                                nữa ngày?
-                            </h4>
-                            <Space direction="vertical" className="mt-4 ml-3">
-                                <Radio>Đáp án câu 1</Radio>
-                                <Radio>Đáp án câu 2</Radio>
-                                <Radio>Đáp án câu 3</Radio>
-                                
-                            </Space>
-                            <Button className='block w-[200px]'>Tiếp</Button>
+                    {currentQuiz && (
+                        <div className="w-full h-full bg-mark absolute top-0 z-50 flex justify-center items-center">
+                            <div className="w-5/6 h-5/6 bg-white p-6 rounded-xl">
+                                <h4>{currentQuiz?.question}</h4>
+                                <Radio.Group
+                                    onChange={(e) => {
+                                        console.log(e);
+
+                                        setAnswer(e.target.value);
+                                    }}
+                                >
+                                    <Space direction="vertical" className="mt-4 ml-3">
+                                        {currentQuiz.answer.map((item, index) => {
+                                            return <Radio value={item}>{item}</Radio>;
+                                        })}
+                                    </Space>
+                                </Radio.Group>
+                                <Button onClick={handleSubmitAnswer} className="block w-[100px] mt-4">
+                                    Tiếp
+                                </Button>
+                            </div>
                         </div>
-                    </div>
+                    )}
                     <video
                         onTimeUpdate={handleQuizInteraction}
                         ref={videoRef}
+                        autoPlay={false}
                         controls
                         className={`w-full h-full absolute top-0 ${thumbnail && 'hidden'}`}
                     ></video>
