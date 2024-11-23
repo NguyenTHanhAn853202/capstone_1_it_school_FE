@@ -2,6 +2,8 @@ import slider1 from '~/public/media/images/home-slider1.png';
 import slider2 from '~/public/media/images/home-slider-2.png';
 import { Button, Carousel, Checkbox, Flex, Select } from 'antd';
 import CourseStore from '~/components/CourseStore';
+import { useEffect, useState } from 'react';
+import { get } from '~/database';
 
 const sliders = [
     {
@@ -60,6 +62,31 @@ const data = [
 ];
 
 function Store() {
+    const [level, setLevel] = useState([]);
+    const [filterCategory, setFilterCategory] = useState([]);
+    const [category, setCategory] = useState([]);
+    const [title, setTitle] = useState('');
+    const [search, setSearch] = useState('');
+    const [sort, setSort] = useState('');
+    useEffect(() => {
+        (async () => {
+            const response = await get(
+                `/course/search-course?level=${level.join(',')}&category=${filterCategory.join(
+                    ',',
+                )}&title=${title}&sort=${sort}`,
+            );
+            response.data.forEach((item) => {
+                console.log(item.price);
+            });
+        })();
+    }, [JSON.stringify(level), JSON.stringify(filterCategory), title,sort]);
+    useEffect(() => {
+        (async () => {
+            const response = await get('/category');
+            response?.status === 'ok' && setCategory(response.data);
+        })();
+    }, []);
+
     return (
         <div>
             <Carousel className="h-[200px] overflow-hidden" arrows infinite={true}>
@@ -77,11 +104,32 @@ function Store() {
             <div className="flex justify-center">
                 <div className="w-[700px] bg-[rgba(242,245,248,0.8)] rounded-xl flex justify-between items-center h-[60px] relative -top-4 px-5">
                     <input
+                        value={search}
+                        onChange={(e) => {
+                            setSearch(e.target.value);
+                        }}
                         type="text"
                         className="w-[400px] rounded-lg font-normal h-[35px] text-10 px-2"
                         placeholder="--Tìm kiếm--"
                     />
-                    <Button>Tìm kiếm</Button>
+
+                    <div className="space-x-2">
+                        <Button
+                            onClick={() => {
+                                setTitle('');
+                                setSearch('');
+                            }}
+                        >
+                            Xóa
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                setTitle(search);
+                            }}
+                        >
+                            Tìm kiếm
+                        </Button>
+                    </div>
                 </div>
             </div>
             <div className="border border-black w-[70%] m-auto rounded-xl overflow-hidden">
@@ -90,73 +138,54 @@ function Store() {
                     <h4 className="font-bold">Danh mục khóa học:</h4>
                     <Checkbox.Group
                         className="ml-3 space-x-4 mt-2"
-                        options={[
-                            {
-                                label: <p className="text-10 font-medium">Apple</p>,
-                                value: 'Apple',
-                            },
-                            {
-                                label: <p className="text-10 font-medium">Apple</p>,
-                                value: 'Pear',
-                            },
-                            {
-                                label: <p className="text-10 font-medium">Apple</p>,
-                                value: 'Orange',
+                        options={category.map((item) => {
+                            return {
+                                label: <p className="text-10 font-medium">{item.name}</p>,
+                                value: item._id,
                                 disabled: false,
-                            },
-                            {
-                                label: <p className="text-10 font-medium">Apple</p>,
-                                value: 'Orange',
-                                disabled: false,
-                            },
-                            {
-                                label: <p className="text-10 font-medium">Apple</p>,
-                                value: 'Orange',
-                                disabled: false,
-                            },
-                            {
-                                label: <p className="text-10 font-medium">Apple</p>,
-                                value: 'Orange',
-                                disabled: false,
-                            },
-                        ]}
-                        onChange={(e) => {
-                            console.log(e);
+                            };
+                        })}
+                        onChange={(value) => {
+                            setFilterCategory(value);
                         }}
                     />
                     <h4 className="font-bold mt-2">Mức độ:</h4>
                     <Checkbox.Group
                         className="ml-3 space-x-4 mt-2"
+                        onChange={(value) => {
+                            setLevel(value);
+                        }}
                         options={[
-                            { label: <p className="text-10 font-medium">Dễ</p>, value: 'Apple' },
-                            { label: <p className="text-10 font-medium">Trung bình</p>, value: 'Pear' },
-                            { label: <p className="text-10 font-medium">Khó</p>, value: 'Orange' },
+                            { label: <p className="text-10 font-medium">Dễ</p>, value: 'ELEMENTARY' },
+                            { label: <p className="text-10 font-medium">Trung bình</p>, value: 'INTERMEDIATE' },
+                            { label: <p className="text-10 font-medium">Khó</p>, value: 'ADVANCED' },
                         ]}
                     />
+
                     <Select
                         className="w-[200px] block text-12 mt-2"
-                        onChange={(value) => console.log(value)}
-                        defaultValue={0}
+                        onChange={(value) => setSort(value)}
+                        defaultValue={''}
                         options={[
                             {
                                 label: 'Giá',
-                                value: 0,
+                                value: '',
                             },
                             {
                                 label: 'Tăng dần',
-                                value: -1,
+                                value: 'asc',
                             },
                             {
                                 label: 'Giảm dần',
-                                value: 1,
+                                value: 'desc',
                             },
                         ]}
                     ></Select>
                 </div>
             </div>
-            <Flex className='mt-4' wrap gap="middle" justify="left">
+            <Flex className="mt-4" wrap gap="middle" justify="left">
                 {data.map((item, index) => (
-                    <CourseStore key={index} data={item} />
+                    <CourseStore key={index + item.star} data={item} />
                 ))}
             </Flex>
         </div>

@@ -46,7 +46,7 @@ function EditCourse() {
         (async () => {
             const resCourse = await get(`/course/get-course/${id}`);
             if (resCourse?.data) {
-                const data = resCourse.data;
+                const data = resCourse.data.course;
                 updateTitle(data?.title);
                 updateCategory(data?.category);
                 updatePrice(data?.price);
