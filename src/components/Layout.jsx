@@ -32,7 +32,7 @@ function LayoutPage({ children }) {
     } = theme.useToken();
     return (
         <Layout className="bg-side_bar">
-            <Sider trigger={null} collapsible collapsed={collapsed}>
+            <Sider className="!max-w-[250px] !w-[250px] !flex-1" trigger={null} collapsible collapsed={collapsed}>
                 <SideBar />
             </Sider>
             <Layout>

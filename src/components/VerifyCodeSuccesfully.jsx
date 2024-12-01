@@ -4,15 +4,19 @@ import logo from '~/public/media/images/logo.png';
 import Button from './Button';
 import { toastError, toastSuccess } from '~/utils/toasty';
 import { Link, useNavigate } from 'react-router-dom';
+import { Spin } from 'antd';
+import { pathname } from '~/routes/pathname';
 
 function VerifyCodeSuccesfully() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         if (password !== confirmPassword) {
             setError('Mật khẩu xác nhận không khớp!');
             return;
@@ -23,11 +27,13 @@ function VerifyCodeSuccesfully() {
             });
             if (response.status === 'ok') {
                 toastSuccess(response.message);
-                navigate('/login');
+                navigate(pathname.EXPERIENCE);
             }
             response?.response?.data?.message && toastError(response?.response?.data?.message);
         } catch (error) {
             toastError(error.message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -65,7 +71,7 @@ function VerifyCodeSuccesfully() {
                             className=" w-full bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-teal-500"
                             type="submit"
                         >
-                            Đặt lại mật khẩu
+                            {loading ? <Spin /> : 'Đặt lại mật khẩu'}
                         </Button>
                     </div>
                 </form>

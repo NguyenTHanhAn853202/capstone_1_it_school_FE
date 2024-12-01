@@ -51,6 +51,7 @@ function CourseInfo() {
 
     const handleEnroll = async () => {
         if (isEnroll) {
+            console.log(lessons[0]);
             lessons[0]?._id ? navigate('/lesson/' + lessons[0]?._id) : toastInfo('Khóa học chưa có bài học nào');
         } else {
             const response = await get(`/payment/vnpay?amount=${courseInfo.price}&bankOrder=${courseInfo._id}`);

@@ -7,12 +7,14 @@ import Button from './Button';
 import * as Yup from 'yup';
 import { toastError } from '~/utils/toasty';
 import { pathname } from '~/routes/pathname';
+import { Spin } from 'antd';
 
 // const cx = classnames.bind(style);
 const phoneRegExp = /^(\+?\d{1,4}|\d{1,4})?\s?\d{10}$/;
 function ForgotPassword() {
     const [username, setUsername] = useState('');
     const [message, setMessage] = useState('');
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const validationSchema = Yup.object().shape({
         username: Yup.string().test('username', 'Tên đăng nhập phải là email hoặc số điện thoại', (value) => {
@@ -26,6 +28,7 @@ function ForgotPassword() {
     const handleSubmit = async (e) => {
         try {
             e.preventDefault();
+            setLoading(true);
             const value = await validationSchema.validate({ username: username });
             const response = await post('/user/forgot-password', {
                 username,
@@ -35,6 +38,8 @@ function ForgotPassword() {
         } catch (error) {
             setMessage('Yêu cầu thất bại, Vui lòng thử lại.');
             toastError(error.message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -58,7 +63,7 @@ function ForgotPassword() {
                     />
                     <div className="flex justify-center">
                         <Button type="submit" styles="w-[200px]">
-                            Tiếp tục
+                            {loading ? <Spin /> : 'Tiếp tục'}
                         </Button>
                     </div>
                 </form>

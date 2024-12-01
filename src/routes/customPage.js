@@ -2,6 +2,10 @@ import React from 'react';
 import Lading from '~/pages/Lading';
 import { pathname } from './pathname';
 import UploadQuestion from '~/pages/UploadQuestion';
+const DetailPost = React.lazy(() => import('~/pages/DetailPost'));
+const Post = React.lazy(() => import('~/pages/Post'));
+const Chat = React.lazy(() => import('~/pages/Chat'));
+const MyCourse = React.lazy(() => import('~/pages/MyCourse'));
 const Store = React.lazy(() => import('~/pages/Store'));
 const HomePage = React.lazy(() => import('~/pages/HomePage'));
 const Lesson = React.lazy(() => import('~/pages/Lesson'));
@@ -32,6 +36,10 @@ export const publicPath = [
     { pathname: pathname.COURSEMANAGEMENT, Element: CourseManagement },
     { pathname: pathname.LESSON + '/:id', Element: Lesson },
     { pathname: pathname.STORE, Element: Store },
+    { pathname: pathname.MYCOURSE, Element: MyCourse },
+    { pathname: pathname.CHAT, Element: Chat },
+    { pathname: pathname.POST, Element: Post },
+    { pathname: pathname.POSTDETAIL + '/:id', Element: DetailPost },
 ];
 
 export const privatePath = [];

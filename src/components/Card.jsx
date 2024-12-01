@@ -20,7 +20,11 @@ function CardAd({ image, title, price, viewers, star, courseId, width }) {
                 </Tooltip>
                 <h4>{price === 0 ? 'Miễn phí' : formatPrice(price) + '  VND'}</h4>
                 <div className="flex justify-between items-center mt-1">
-                    <Rate className="text-[0.8rem]" defaultValue={star} disabled />
+                    {star !== 0 ? (
+                        <Rate className="text-[0.8rem]" defaultValue={star} disabled />
+                    ) : (
+                        <span>Chưa có đánh giá</span>
+                    )}
                     <p className="">{viewers} Người</p>
                 </div>
             </Card>

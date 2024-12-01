@@ -1,6 +1,6 @@
 import slider1 from '~/public/media/images/home-slider1.png';
 import slider2 from '~/public/media/images/home-slider-2.png';
-import { Button, Carousel, Checkbox, Flex, Select } from 'antd';
+import { Button, Carousel, Checkbox, Flex, Pagination, Select } from 'antd';
 import CourseStore from '~/components/CourseStore';
 import { useEffect, useState } from 'react';
 import { get } from '~/database';
@@ -18,49 +18,7 @@ const sliders = [
     },
 ];
 
-const data = [
-    {
-        image: slider2,
-        title: 'Bai hoc cua nguyen thanh an',
-        price: 1000000,
-        viewers: 56,
-        star: 4,
-        courseId: '',
-    },
-    {
-        image: slider2,
-        title: 'Bai hoc cua nguyen thanh an',
-        price: 1000000,
-        viewers: 56,
-        star: 4,
-        courseId: '',
-    },
-    {
-        image: slider2,
-        title: 'Bai hoc cua nguyen thanh an',
-        price: 1000000,
-        viewers: 56,
-        star: 4,
-        courseId: '',
-    },
-    {
-        image: slider2,
-        title: 'Bai hoc cua nguyen thanh an',
-        price: 1000000,
-        viewers: 56,
-        star: 4,
-        courseId: '',
-    },
-    {
-        image: slider2,
-        title: 'Bai hoc cua nguyen thanh an',
-        price: 1000000,
-        viewers: 56,
-        star: 4,
-        courseId: '',
-    },
-];
-
+const limit = 12;
 function Store() {
     const [level, setLevel] = useState([]);
     const [filterCategory, setFilterCategory] = useState([]);
@@ -68,24 +26,30 @@ function Store() {
     const [title, setTitle] = useState('');
     const [search, setSearch] = useState('');
     const [sort, setSort] = useState('');
+    const [courses, setCourses] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [numberPage, setNumberPage] = useState(10);
     useEffect(() => {
         (async () => {
             const response = await get(
                 `/course/search-course?level=${level.join(',')}&category=${filterCategory.join(
                     ',',
-                )}&title=${title}&sort=${sort}`,
+                )}&title=${title}&sort=${sort}&limit=${limit}&currentPage=${currentPage}`,
             );
-            response.data.forEach((item) => {
-                console.log(item.price);
-            });
+            if (response.status === 'ok') {
+                setCourses(response.data.courses);
+                setNumberPage(response.data.numberPage * 10);
+            }
         })();
-    }, [JSON.stringify(level), JSON.stringify(filterCategory), title,sort]);
+    }, [JSON.stringify(level), JSON.stringify(filterCategory), title, sort, currentPage]);
     useEffect(() => {
         (async () => {
             const response = await get('/category');
             response?.status === 'ok' && setCategory(response.data);
         })();
     }, []);
+
+    console.log(numberPage);
 
     return (
         <div>
@@ -137,7 +101,7 @@ function Store() {
                 <div className="px-3 py-2">
                     <h4 className="font-bold">Danh mục khóa học:</h4>
                     <Checkbox.Group
-                        className="ml-3 space-x-4 mt-2"
+                        className="ml-3 mt-2"
                         options={category.map((item) => {
                             return {
                                 label: <p className="text-10 font-medium">{item.name}</p>,
@@ -184,10 +148,18 @@ function Store() {
                 </div>
             </div>
             <Flex className="mt-4" wrap gap="middle" justify="left">
-                {data.map((item, index) => (
+                {courses.map((item, index) => (
                     <CourseStore key={index + item.star} data={item} />
                 ))}
             </Flex>
+            <Pagination
+                className="mt-3"
+                onChange={(e) => {
+                    setCurrentPage(e);
+                }}
+                defaultCurrent={1}
+                total={numberPage}
+            />
         </div>
     );
 }

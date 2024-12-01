@@ -74,9 +74,14 @@ p {
     color: black;
 }
 
-.slick-arrow{
+.slick-arrow {
     color: black !important;
 }
-.ant-rate-star{
+.ant-rate-star {
     margin-inline-end: 5px !important;
+}
+
+em-emoji-picker {
+    position: absolute;
+    top: -450px;
 }

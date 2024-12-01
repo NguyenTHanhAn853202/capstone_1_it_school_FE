@@ -14,4 +14,8 @@ export const pathname = {
     COURSEMANAGEMENT: '/course-management',
     LESSON: '/lesson',
     STORE: '/store',
+    MYCOURSE: '/my-course',
+    CHAT:"/chat",
+    POST:"/post",
+    POSTDETAIL:'/post-detail'
 };

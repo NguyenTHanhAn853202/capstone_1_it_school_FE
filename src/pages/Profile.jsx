@@ -9,12 +9,15 @@ import { get, post } from '~/database';
 import { PATH_MEDIA } from '~/utils/secret';
 import { useNavigate } from 'react-router-dom';
 import { toastSuccess } from '~/utils/toasty';
+import { useStore } from '~/hook/store';
 
 function Profile() {
     const idInput = useId();
     const [startDate, setStartDate] = useState('');
     const imgRef = useRef();
     const navigate = useNavigate();
+    const setAvatar = useStore((state) => state.setAvatar);
+
     const [{ username, address, phoneNumber, email, avatarUrl, avatar }, setInformation] = useState({
         username: '',
         address: '',
@@ -40,14 +43,18 @@ function Profile() {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-            response?.status === 'ok' && toastSuccess(response.message);
             response?.response?.data?.message && toastSuccess(response.response.data.message);
+            if (response?.status === 'ok') {
+                localStorage.avatar = response.data.avatar;
+                setAvatar(avatar && URL.createObjectURL(avatar));
+                toastSuccess(response.message);
+            }
         } catch (error) {}
     };
 
     const handleChangeAvatar = (e) => {
         const file = e.target.files[0];
-
+        imgRef.current.src = URL.createObjectURL(file);
         setInformation((props) => ({ ...props, avatar: file }));
     };
 

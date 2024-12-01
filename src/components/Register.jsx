@@ -9,11 +9,13 @@ import { toast } from 'react-toastify';
 import { success, toastError, toastSuccess } from '~/utils/toasty';
 import { post } from '~/database';
 import { pathname } from '~/routes/pathname';
+import { Spin } from 'antd';
 
 const logo = [logoFacebook, logoGoogle, logoGithub];
 
 function Register() {
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
     const [register, setRegister] = useState({
         username: '',
         password: '',
@@ -39,6 +41,7 @@ function Register() {
     const handleSubmitRegister = async (e) => {
         try {
             e.preventDefault();
+            setLoading(true);
             const value = await registerValidate.validate(register);
             const response = await post('/user/register', {
                 username: value.username,
@@ -54,6 +57,8 @@ function Register() {
         } catch (error) {
             toastError(error.message);
             console.log(error.message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -85,7 +90,7 @@ function Register() {
 
                     <div className="flex justify-center mt-2">
                         <Button styles="font-light text-[1rem] h-[35px] w-[190px] bg-button_green py-[5px] mt-[10px] ">
-                            Đăng ký
+                            {loading ? <Spin /> : 'Đăng ký'}
                         </Button>
                     </div>
                 </form>

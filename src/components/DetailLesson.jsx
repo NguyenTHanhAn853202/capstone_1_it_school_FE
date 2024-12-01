@@ -14,8 +14,12 @@ import { get, post } from '~/database';
 import { useLocation, useParams } from 'react-router-dom';
 import { PATH_MEDIA } from '~/utils/secret';
 import { toastInfo } from '~/utils/toasty';
+import Webcam from 'react-webcam';
+import axios from 'axios';
 
 function DetailLesson() {
+    const webcamRef = useRef(null);
+    const [count, setCount] = useState(0);
     const lessonId = useParams().id;
     const [listLessons, setListLessons] = useState([]);
     // const { courseId = '673898f1716609e4efc7e4a8' } = useLocation().state;
@@ -53,6 +57,39 @@ function DetailLesson() {
         // videoRef.current.className.includes('hidden') && videoRef.current.play();
     }, [videoRef.current, thumbnail]);
 
+    const captureAndSend = async () => {
+        if (!webcamRef.current) return;
+        const imageSrcs = webcamRef.current.getScreenshot();
+        if (imageSrcs) {
+            try {
+                const blob = await fetch(imageSrcs).then((res) => res.blob());
+                const file = new File([blob], 'webcam-image.jpg', {
+                    type: 'image/jpeg',
+                });
+                console.log(file);
+
+                const formData = new FormData();
+                formData.append('image', file);
+                const data = await axios.post('http://127.0.0.1:5000/detect', formData, {});
+                console.log(data.data.status);
+                if (data.data.status === 'Closed') {
+                    setCount((pre) => pre + 1);
+                } else {
+                    if (count > 0) {
+                        setCount((pre) => pre - 1);
+                    }
+                }
+                console.log(count);
+                if (count > 30) {
+                    const speak = new SpeechSynthesisUtterance('warning');
+                    window.speechSynthesis.speak(speak);
+                }
+            } catch (error) {
+                console.error('Error sending image:', error);
+            }
+        }
+    };
+
     useEffect(() => {
         (async () => {
             const response = await get('/lesson/lesson/' + lessonId);
@@ -83,6 +120,7 @@ function DetailLesson() {
         })();
     }, [videoData.course?._id]);
     const handleQuizInteraction = (e) => {
+        captureAndSend();
         const value = e.target;
         if (value.currentTime < lastTime + 1 || value.currentTime < maxTime) {
             setLastTime(value.currentTime);
@@ -100,7 +138,6 @@ function DetailLesson() {
                 setQuiz((pre) => pre.filter((_) => _._id !== item._id));
             }
         });
-        console.log(value.currentTime);
     };
     const handleSubmitAnswer = async () => {
         if (!answer) {
@@ -122,12 +159,20 @@ function DetailLesson() {
         }
     };
 
-    useEffect(() => {
-        console.log(currentQuiz);
-    });
+    const handleOnPlay = async () => {};
+    const handleOnPause = async () => {
+        console.log('pause');
+        setCount(0);
+    };
 
     return (
         <div className="flex space-x-5">
+            <Webcam
+                audio={false}
+                ref={webcamRef}
+                screenshotFormat="image/jpeg"
+                className="absolute -z-10" // Ẩn webcam
+            />
             <div className="w-[60%]">
                 <div className="h-[400px] relative">
                     <div
@@ -151,8 +196,6 @@ function DetailLesson() {
                                 <h4>{currentQuiz?.question}</h4>
                                 <Radio.Group
                                     onChange={(e) => {
-                                        console.log(e);
-
                                         setAnswer(e.target.value);
                                     }}
                                 >
@@ -170,6 +213,8 @@ function DetailLesson() {
                     )}
                     <video
                         onTimeUpdate={handleQuizInteraction}
+                        onPlay={handleOnPlay}
+                        onPause={handleOnPause}
                         ref={videoRef}
                         autoPlay={false}
                         controls

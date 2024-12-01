@@ -4,6 +4,7 @@ import { post } from '~/database';
 import logo from '~/public/media/images/logo.png';
 import Button from './Button';
 import { toastError } from '~/utils/toasty';
+import { Spin } from 'antd';
 
 const numberRegex = /^\d+$/;
 function VerifyCode() {
@@ -17,6 +18,7 @@ function VerifyCode() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            setLoading(true);
             const response = await post('/user/verify-forgot-password', {
                 username,
                 code: verificationCode * 1,
@@ -25,6 +27,8 @@ function VerifyCode() {
             response?.response?.data?.status === 'error' && toastError(response.response.data?.message);
         } catch (error) {
             toastError(error.message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -55,7 +59,7 @@ function VerifyCode() {
                             type="submit"
                             className="w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                         >
-                            Xác nhận
+                            {loading ? <Spin /> : ' Xác nhận'}
                         </Button>
                     </div>
                 </form>

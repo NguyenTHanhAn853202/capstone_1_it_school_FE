@@ -8,11 +8,23 @@ import { IoIosNotificationsOutline } from 'react-icons/io';
 import avatar from '~/public/media/images/logo_node_react.png';
 import { IoIosSearch } from 'react-icons/io';
 import { PATH_MEDIA } from '~/utils/secret';
+import { Popover, Tooltip } from 'antd';
+import { pathname } from '~/routes/pathname';
+import { Link } from 'react-router-dom';
+import { useEffect, useRef } from 'react';
+import { useStore } from '~/hook/store';
 
 const cx = classname.bind(styles);
 
 function Header() {
     const handleToggle = useToggleMode((state) => state.toggleDarkMode);
+    const imgRef = useRef();
+    const avatar = useStore((state) => state.store.avatar);
+    console.log(avatar);
+
+    useEffect(() => {
+        imgRef.current.src = avatar;
+    }, [avatar]);
     return (
         <Container
             style={'flex items-center h-full'}
@@ -22,13 +34,13 @@ function Header() {
         >
             <div className="flex justify-between">
                 <img src={logo} className="block w-[40px] h-[40px]" />
-                <div className="w-[400px] h-[40px] rounded-3xl overflow-hidden border border-dark flex items-center">
+                {/* <div className="w-[400px] h-[40px] rounded-3xl overflow-hidden border border-dark flex items-center">
                     <input className="w-[86%] h-full text-black px-[13px]" />
                     <span className="w-[0.5px] h-1/2 bg-dark "></span>
                     <button className="text-black text-[1.6rem] flex-1 flex justify-center hover:opacity-50">
                         <IoIosSearch />
                     </button>
-                </div>
+                </div> */}
                 <div className="flex space-x-sm">
                     <button className="text-[1.6rem] text-black hover:opacity-50">
                         <FaRegAddressBook />
@@ -36,11 +48,31 @@ function Header() {
                     <button className="text-[1.8rem] text-black hover:opacity-50">
                         <IoIosNotificationsOutline />
                     </button>
-                    <img
-                        className="size-[40px] rounded-full cursor-pointer hover:opacity-50"
-                        src={`${PATH_MEDIA}/${localStorage?.avatar}`}
-                        alt={'avatar'}
-                    />
+                    <Popover
+                        content={
+                            <div className="flex flex-col space-y-2">
+                                <Link className="text-10" to={pathname.COURSEMANAGEMENT}>
+                                    Quản lý khóa học
+                                </Link>
+                                <Link className="text-10" to={pathname.CREATECOURSE}>
+                                    Tạo mới khóa học
+                                </Link>
+                                <Link className="text-10" to={pathname.PROFILE}>
+                                    Thông tin cá nhân
+                                </Link>
+                                <Link className="text-10" to={pathname.CHANGE_PASSWORD}>
+                                    Đổi mật khẩu
+                                </Link>
+                            </div>
+                        }
+                    >
+                        <img
+                            className="size-[40px] rounded-full cursor-pointer hover:opacity-50"
+                            src={`${PATH_MEDIA}/${localStorage?.avatar}`}
+                            alt={'avatar'}
+                            ref={imgRef}
+                        />
+                    </Popover>
                 </div>
             </div>
         </Container>

@@ -220,15 +220,15 @@ function CourseManagement() {
             filters: [
                 {
                     text: 'Cao',
-                    value: 'Cao',
+                    value: 'ADVANCED',
                 },
                 {
                     text: 'Trung bình',
-                    value: 'Trung bình',
+                    value: 'INTERMEDIATE',
                 },
                 {
                     text: 'Thấp',
-                    value: 'Thấp',
+                    value: 'ELEMENTARY',
                 },
             ],
             onFilter: (value, record) => record.level.indexOf(value) === 0,

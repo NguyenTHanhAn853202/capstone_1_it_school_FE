@@ -9,14 +9,16 @@ import { Link } from 'react-router-dom';
 const listNav = [
     { Element: GoHome, title: 'Trang chủ', to: pathname.HOME },
     { Element: GiBookshelf, title: 'Khoá học của tôi', to: '' },
-    { Element: MdOutlineAssignment, title: 'Bài tập', to: '' },
+    // { Element: MdOutlineAssignment, title: 'Bài tập', to: '' },
     { Element: HiOutlineUserGroup, title: 'Nhóm học tập', to: '' },
     { Element: HiOutlineChatAlt2, title: 'Diễn đàn', to: '' },
 ];
 function SideBar() {
     return (
         <nav className="min-h-screen h-full top-0 bg-side_bar z-50">
-            <h1 className="text-center h-[70px] leading-[70px] font-bold text-[1.5rem]">ITSchool</h1>
+            <h1 className="text-center hover:text-black h-[70px] leading-[70px] font-bold text-[1.5rem]">
+                <Link to={pathname.HOME} className='hover:text-black'>ITSchool</Link>
+            </h1>
             <ul className="pl-[20px] pt-5 pr-[10px]">
                 {listNav.map((item, index) => (
                     <li className="" key={index}>
