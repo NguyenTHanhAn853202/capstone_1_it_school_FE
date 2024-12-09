@@ -17,5 +17,7 @@ export const pathname = {
     MYCOURSE: '/my-course',
     CHAT:"/chat",
     POST:"/post",
-    POSTDETAIL:'/post-detail'
+    POSTDETAIL:'/post-detail',
+    CREATEPOST:"/create-post",
+    LISTPOST:"/list-posts"
 };

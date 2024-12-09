@@ -90,6 +90,7 @@ function CreateCourse() {
             }
         } catch (error) {
             console.log(error.message);
+            toastError(error.message);
         } finally {
             console.log(course);
         }

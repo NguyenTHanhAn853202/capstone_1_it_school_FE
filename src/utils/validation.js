@@ -14,4 +14,10 @@ export const changePasswordValidation = Yup.object({
         .required('Vui lòng xác nhận mật khẩu mới'),
 });
 
-export const numberValidation = Yup.number()
+export const postValidation = Yup.object({
+    title: Yup.string().min(3, 'Tiêu đề lớn hơn 3 ký tự').required('Vui lòng nhập đủ thông tin'),
+    content: Yup.string().min(3, 'Tiêu đề lớn hơn 3 ký tự').required('Vui lòng nhập đủ thông tin'),
+    categoryId: Yup.string().required('Vui lòng chọn chuyên mục'),
+});
+
+export const numberValidation = Yup.number();

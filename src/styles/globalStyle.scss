@@ -80,7 +80,10 @@ p {
 .ant-rate-star {
     margin-inline-end: 5px !important;
 }
-
+p ul,
+p ol {
+    list-style: inside;
+}
 em-emoji-picker {
     position: absolute;
     top: -450px;

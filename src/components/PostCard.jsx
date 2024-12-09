@@ -4,13 +4,14 @@ import { PATH_MEDIA } from '~/utils/secret';
 import loading from '~/public/media/loading/loading.gif';
 import { Link } from 'react-router-dom';
 import ImageCustom from './ImageCustom';
+import { pathname } from '~/routes/pathname';
 
-function PostCard({ image, username, avatar, title, description }) {
+function PostCard({ image, username, avatar, title, description, id }) {
     return (
         <div className="p-2 border border-silver rounded-lg">
             <div className="flex justify-between">
                 <div className="flex space-x-1">
-                    <Avatar size={25}>USER</Avatar>
+                    <Avatar size={25} src={PATH_MEDIA + avatar} />
                     <h2>{username}</h2>
                 </div>
                 <button>
@@ -22,10 +23,14 @@ function PostCard({ image, username, avatar, title, description }) {
                     <ImageCustom src={PATH_MEDIA + image} className={'!w-[170px] !h-[100px] object-fill'} />
                 </div>
                 <div className="flex-1">
-                    <Link className="text-10 font-bold truncate cursor-pointer hover:opacity-60 hover:text-black">
+                    <Link
+                        to={pathname.POSTDETAIL + '/' + id}
+                        className="text-10 font-bold truncate cursor-pointer hover:opacity-60 hover:text-black"
+                    >
                         {title}
                     </Link>
-                    <p className="line-clamp-2">{description}</p>
+                    <p className="line-clamp-2" dangerouslySetInnerHTML={{ __html: description || '' }}></p>
+
                     <span className="mt-1 block opacity-70">1 thang truoc</span>
                 </div>
             </div>

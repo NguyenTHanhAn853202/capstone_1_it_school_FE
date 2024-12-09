@@ -2,6 +2,7 @@ import React from 'react';
 import Lading from '~/pages/Lading';
 import { pathname } from './pathname';
 import UploadQuestion from '~/pages/UploadQuestion';
+const CreatePost = React.lazy(() => import('../pages/CreatePost'));
 const DetailPost = React.lazy(() => import('~/pages/DetailPost'));
 const Post = React.lazy(() => import('~/pages/Post'));
 const Chat = React.lazy(() => import('~/pages/Chat'));
@@ -40,6 +41,7 @@ export const publicPath = [
     { pathname: pathname.CHAT, Element: Chat },
     { pathname: pathname.POST, Element: Post },
     { pathname: pathname.POSTDETAIL + '/:id', Element: DetailPost },
+    { pathname: pathname.CREATEPOST, Element: CreatePost },
 ];
 
 export const privatePath = [];

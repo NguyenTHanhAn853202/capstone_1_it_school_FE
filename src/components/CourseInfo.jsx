@@ -1,6 +1,6 @@
+import { Avatar } from 'antd';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import Avatar from '~/components/Avatar';
 import Button from '~/components/Button';
 import ShowMore from '~/components/ShowMore';
 import Star from '~/components/Star';
@@ -80,14 +80,14 @@ function CourseInfo() {
             <div className="flex justify-between gap-4">
                 <div className="w-[55%] space-y-2">
                     <div className="flex gap-2 items-center">
-                        <Avatar alt={'avatar'} url={`${PATH_MEDIA}/${courseInfo?.instructor?.avatar}`} />
+                        <Avatar size={50} alt={'avatar'} src={`${PATH_MEDIA}/${courseInfo?.instructor?.avatar}`} />
                         <div>
                             <strong>{courseInfo?.instructor?.name}</strong>
                             <br />
                             <span>Giang Vien</span>
                         </div>
                     </div>
-                    <Star starNumber={4} />
+                    {courseInfo?.star === 0 ? <p>Chưa có đánh giá</p> : <Star starNumber={courseInfo?.star} />}
                     <p className="flex ">
                         <strong className="block min-w-[80px]">Khóa học: </strong>
                         <span>{courseInfo?.title}</span>
@@ -117,10 +117,12 @@ function CourseInfo() {
                     </ul>
                 </div>
                 <div className="flex-1 space-y-3">
-                    <img
-                        src={`${PATH_MEDIA}/${courseInfo?.image}`}
-                        className="w-[290px] h-[180px] block object-cover m-auto"
-                    />
+                    {courseInfo?.image && (
+                        <img
+                            src={`${PATH_MEDIA}/${courseInfo?.image}`}
+                            className="w-[290px] h-[180px] block object-cover m-auto"
+                        />
+                    )}
                     <h4 className="text-center text-red font-bold">{`Giá: ${formatPrice(courseInfo?.price)}VNĐ`}</h4>
                     <div className="flex justify-center">
                         <Button onClick={handleEnroll}>{isEnroll ? 'Đến khóa học' : 'Đăng ký ngay'}</Button>
