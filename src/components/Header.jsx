@@ -42,21 +42,28 @@ function Header() {
                     </button>
                 </div> */}
                 <div className="flex space-x-sm">
-                    <button className="text-[1.6rem] text-black hover:opacity-50">
+                    <Link
+                        to={pathname.MYCOURSE}
+                        className="text-[1.6rem] text-black hover:opacity-50 flex items-center"
+                    >
                         <FaRegAddressBook />
-                    </button>
-                    <button className="text-[1.8rem] text-black hover:opacity-50">
+                    </Link>
+                    <Link className="text-[1.8rem] text-black hover:opacity-50 flex items-center">
                         <IoIosNotificationsOutline />
-                    </button>
+                    </Link>
                     <Popover
                         content={
                             <div className="flex flex-col space-y-2">
-                                <Link className="text-10" to={pathname.COURSEMANAGEMENT}>
-                                    Quản lý khóa học
-                                </Link>
-                                <Link className="text-10" to={pathname.CREATECOURSE}>
-                                    Tạo mới khóa học
-                                </Link>
+                                {(localStorage.role === 'INSTRUCTOR' || localStorage.role === 'ADMIN') && (
+                                    <>
+                                        <Link className="text-10" to={pathname.COURSEMANAGEMENT}>
+                                            Quản lý khóa học
+                                        </Link>
+                                        <Link className="text-10" to={pathname.CREATECOURSE}>
+                                            Tạo mới khóa học
+                                        </Link>
+                                    </>
+                                )}
                                 <Link className="text-10" to={pathname.PROFILE}>
                                     Thông tin cá nhân
                                 </Link>

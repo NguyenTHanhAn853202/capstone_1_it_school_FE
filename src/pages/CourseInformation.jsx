@@ -38,7 +38,6 @@ function CourseInformation() {
         try {
             const value = await rateValidation.validate({ rate: starNumber, comment: textComment, courseId: id });
             const response = await post('/rate/create-rate', value);
-
             if (response?.status === 'ok') {
                 setComments((pre) => {
                     const newComment = [...comments];

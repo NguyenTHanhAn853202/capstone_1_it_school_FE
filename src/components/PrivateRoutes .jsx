@@ -1,10 +1,9 @@
-import { Outlet,Navigate } from "react-router-dom";
+import { Outlet, Navigate } from 'react-router-dom';
+import { pathname } from '~/routes/pathname';
 
-function PrivateRoutes () {
-    const isLoggedIn = true
-    return (
-        isLoggedIn? <Outlet /> : <Navigate to="/login" />
-    );
+function PrivateRoutes({ children }) {
+    const isLoggedIn = localStorage.profileId;
+    return isLoggedIn ? <Outlet /> : <Navigate to={pathname.EXPERIENCE} />;
 }
 
 export default PrivateRoutes;

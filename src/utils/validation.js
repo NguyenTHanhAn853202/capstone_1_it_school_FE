@@ -20,4 +20,17 @@ export const postValidation = Yup.object({
     categoryId: Yup.string().required('Vui lòng chọn chuyên mục'),
 });
 
+export const validateInstructor = Yup.object({
+    email: Yup.string().email('Email không hợp lệ').required('Email là bắt buộc'),
+    fullName: Yup.string().min(2, 'Họ và tên phải có ít nhất 2 ký tự').required('Họ và tên là bắt buộc'),
+    cccd: Yup.string()
+        .matches(/^\d{9,12}$/, 'CCCD phải từ 9-12 chữ số')
+        .required('CCCD là bắt buộc'),
+    phone: Yup.string()
+        .matches(/^(0\d{9})$/, 'Số điện thoại không hợp lệ')
+        .required('Số điện thoại là bắt buộc'),
+    field: Yup.string().required('Lĩnh vực là bắt buộc'),
+    startDate: Yup.string().required('Ngày sinh là bắt buộc'),
+});
+
 export const numberValidation = Yup.number();

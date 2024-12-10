@@ -19,5 +19,7 @@ export const pathname = {
     POST:"/post",
     POSTDETAIL:'/post-detail',
     CREATEPOST:"/create-post",
-    LISTPOST:"/list-posts"
+    LISTPOST:"/list-posts",
+    INSTRUCTOR:'/instructor-register',
+    ACCEPT_INSTRUCTOR:'/accept-instructor-register',
 };

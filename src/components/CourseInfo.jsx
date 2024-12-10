@@ -20,16 +20,18 @@ function CourseInfo() {
     const [isEnroll, setIsEnroll] = useState(false);
     const navigate = useNavigate();
 
-    socket.on(`payment-${localStorage.profileId}`, (data) => {
-        if (data.code === 100) {
-            toastSuccess('Thanh Toán thành công');
-        }
-    });
+    useEffect(() => {
+        socket.on(`payment-${localStorage.profileId}`, (data) => {
+            if (data.code === 100) {
+                toastSuccess('Thanh Toán thành công');
+            }
+        });
+    }, []);
 
     useEffect(() => {
         (async () => {
             try {
-                const response = await get(`/course/get-course/${id}?userId=${localStorage.userId}`);
+                const response = await get(`/course/get-course/${id}?userId=${localStorage.profileId}`);
                 const lessonsResponse = await get(`/lesson/lessons/${id}`);
                 if (lessonsResponse.status === 'ok') {
                     const data = lessonsResponse.data;
@@ -39,6 +41,8 @@ function CourseInfo() {
                         setLessons(data);
                     }
                 }
+                console.log(response);
+
                 if (response.status === 'ok') {
                     setCourseInfo(response.data.course);
                     setIsEnroll(response.data.enroll);

@@ -7,29 +7,36 @@ import mainLading from '~/public/media/images/main_lading_page.png';
 import LoginRegister from './LoginRegister';
 import { useState } from 'react';
 import Container from '~/components/Container';
+import InstructorRegister from './InstructorRegister';
 
 const cx = classnames.bind(style);
 
 function Lading() {
     const [enjoin, setEnjoin] = useState({ value: null });
+    const [instructor, setInstructor] = useState(false);
     return (
         <div className={cx('wrapper', 'relative')}>
             <div className="absolute w-full">
                 <div className="flex justify-between pt-[20px] pl-[20px] pr-[20px] items-center">
                     <img className="w-[70px] h-[70px] object-cover" src={logo} />
-                    <ul className="flex items-center space-x-[10px] m-0">
+                    <ul className="flex items-center space-x-[14px] m-0">
                         <li>
                             <Link
-                                className="hover:opacity-65 hover:underline text-[1.6rem] font-bold text-white"
+                                className="hover:opacity-65 hover:underline text-[1.2rem] font-bold text-white"
                                 to={'/'}
                             >
                                 Trang chủ
                             </Link>
                         </li>
                         <li>
-                            <Link className=" hover:opacity-65 hover:underline text-[1.6rem] font-bold text-white">
-                                Thông tin
-                            </Link>
+                            <button
+                                onClick={() => {
+                                    setInstructor(true);
+                                }}
+                                className=" hover:opacity-65 hover:underline text-[1.2rem] font-bold text-white"
+                            >
+                                Đăng ký giảng viên
+                            </button>
                         </li>
                         <li>
                             <Button onClick={() => setEnjoin({ value: 'login' })}>Trải nghiệm</Button>
@@ -56,6 +63,7 @@ function Lading() {
                 </div>
             </div>
             {enjoin.value && <LoginRegister enjoin={enjoin} setEnjoin={setEnjoin} />}
+            {instructor && <InstructorRegister setInstructor={setInstructor} />}
         </div>
     );
 }

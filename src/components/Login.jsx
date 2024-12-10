@@ -31,6 +31,7 @@ function Login() {
                 localStorage.userId = data.user;
                 localStorage.avatar = data.avatar;
                 localStorage.profileId = data._id;
+                localStorage.role = data.user.role;
                 navigate('/');
             }
             response?.response?.data?.message && toastError('Đăng nhập thất bại vui lòng kiểm tra lại');

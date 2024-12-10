@@ -6,6 +6,7 @@ import sampleImage from '~/public/media/images/logo_node_react.png';
 import { useEffect, useState } from 'react';
 import { get } from '~/database';
 import { PATH_MEDIA } from '~/utils/secret';
+import '~/styles/Carousel.scss';
 
 const sliders = [
     {
@@ -80,7 +81,7 @@ function HomePage() {
                             <div className="absolute z-30 top-1/2 -translate-y-1/2 ml-6">
                                 <h1 className="text-[40px] font-bold">{item.title}</h1>
                                 <p className="text-12 font-bold">{item.description}</p>
-                                <Button className='mt-2'>Tham gia ngay</Button>
+                                <Button className="mt-2">Tham gia ngay</Button>
                             </div>
                             <img className="absolute object-fill w-full h-full" src={item.image} />
                         </div>
@@ -91,17 +92,19 @@ function HomePage() {
                 return (
                     <div key={index}>
                         <h1 className="font-bold text-12 mb-2">{item.title}</h1>
-                        <Carousel className="flex justify-center" arrows slidesToShow={4}>
+                        <Carousel className="flex justify-center space-x-2" arrows slidesToShow={4}>
                             {item.courses.map((item, index) => (
-                                <CardAd
-                                    courseId={item._id}
-                                    key={index}
-                                    star={item?.star}
-                                    viewers={item?.studentNumber}
-                                    image={`${PATH_MEDIA}${item?.image}`}
-                                    price={item?.price}
-                                    title={item?.title}
-                                />
+                                <div className="ml-2">
+                                    <CardAd
+                                        courseId={item._id}
+                                        key={index}
+                                        star={item?.star}
+                                        viewers={item?.studentNumber}
+                                        image={`${PATH_MEDIA}${item?.image}`}
+                                        price={item?.price}
+                                        title={item?.title}
+                                    />
+                                </div>
                             ))}
                         </Carousel>
                     </div>

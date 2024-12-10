@@ -37,7 +37,7 @@ function Store() {
                 )}&title=${title}&sort=${sort}&limit=${limit}&currentPage=${currentPage}`,
             );
             if (response.status === 'ok') {
-                setCourses(response.data.courses);
+                setCourses(response.data.courses || []);
                 setNumberPage(response.data.numberPage * 10);
             }
         })();
@@ -152,14 +152,17 @@ function Store() {
                     <CourseStore key={index + item.star} data={item} />
                 ))}
             </Flex>
-            <Pagination
-                className="mt-3"
-                onChange={(e) => {
-                    setCurrentPage(e);
-                }}
-                defaultCurrent={1}
-                total={numberPage}
-            />
+            {courses.length === 0 && <h1 className="mt-6 text-center">Không tìm thấy khóa học nào</h1>}
+            {numberPage > 10 && (
+                <Pagination
+                    className="mt-3"
+                    onChange={(e) => {
+                        setCurrentPage(e);
+                    }}
+                    defaultCurrent={1}
+                    total={numberPage}
+                />
+            )}
         </div>
     );
 }
