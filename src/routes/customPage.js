@@ -2,6 +2,7 @@ import React, { lazy } from 'react';
 import Lading from '~/pages/Lading';
 import { pathname } from './pathname';
 import UploadQuestion from '~/pages/UploadQuestion';
+const AccountManagement = lazy(() => import('~/pages/AccountManagement'));
 const AcceptInstructor = lazy(() => import('~/pages/AcceptInstuctor'));
 const InstructorRegister = lazy(() => import('~/pages/InstructorRegister'));
 const CreatePost = React.lazy(() => import('../pages/CreatePost'));
@@ -53,4 +54,7 @@ export const instructorPath = [
     { pathname: pathname.COURSEMANAGEMENT, Element: CourseManagement },
 ];
 
-export const adminPath = [{ pathname: pathname.ACCEPT_INSTRUCTOR, Element: AcceptInstructor }];
+export const adminPath = [
+    { pathname: pathname.ACCEPT_INSTRUCTOR, Element: AcceptInstructor },
+    { pathname: pathname.ACCOUNT_MANAGEMENT, Element: AccountManagement },
+];

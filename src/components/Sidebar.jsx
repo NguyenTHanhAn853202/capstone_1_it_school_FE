@@ -5,7 +5,8 @@ import { GiBookshelf } from 'react-icons/gi';
 import { HiOutlineUserGroup } from 'react-icons/hi';
 import { HiOutlineChatAlt2 } from 'react-icons/hi';
 import { IoLogInOutline } from 'react-icons/io5';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { post } from '~/database';
 const listNav = [
     { Element: GoHome, title: 'Trang chủ', to: pathname.HOME },
     { Element: GiBookshelf, title: 'Khóa học', to: pathname.STORE },
@@ -13,6 +14,14 @@ const listNav = [
     { Element: HiOutlineChatAlt2, title: 'Diễn đàn', to: pathname.POST },
 ];
 function SideBar() {
+    const navigate = useNavigate();
+    const handleLogout = async () => {
+        const res = await post('/user/logout');
+        if (res.status === 'ok') {
+            localStorage.clear();
+            navigate(pathname.EXPERIENCE);
+        }
+    };
     return (
         <nav className="min-h-screen h-full top-0 bg-side_bar z-50">
             <h1 className="text-center hover:text-black h-[70px] leading-[70px] font-bold text-[1.5rem]">
@@ -39,7 +48,7 @@ function SideBar() {
             <div className="pl-[20px] pr-[10px] flex mt-1">
                 <button className="py-[10px] px-[5px] hover:bg-mark hover:opacity-60 rounded-xl w-full text-[1.1rem] font-bold flex items-center gap-1">
                     <IoLogInOutline className="text-[1.4rem]" />
-                    <span>Login</span>
+                    <span onClick={handleLogout}>Logout</span>
                 </button>
             </div>
         </nav>

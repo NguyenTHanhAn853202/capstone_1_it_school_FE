@@ -1,10 +1,77 @@
-import { Table, Tooltip } from 'antd';
+import { Image, Table, Tooltip } from 'antd';
+import dayjs from 'dayjs';
+import { useEffect, useState } from 'react';
 import { CiEdit } from 'react-icons/ci';
-import { RiDeleteBinLine } from 'react-icons/ri';
+import { RiDeleteBinLine, RiEdit2Line } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
+import Dialog from '~/components/Dialog';
+import { get, post } from '~/database';
+import { PATH_MEDIA } from '~/utils/secret';
+import { toastSuccess } from '~/utils/toasty';
 
 function AcceptInstructor() {
-    const handleShowDialog = () => {};
+    const [open, setOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [info, setInfo] = useState();
+    const [dataSource, setDataSource] = useState([]);
+    const loadData = async () => {
+        try {
+            const res = await get('/in-re/get-in-re');
+            if (res.status === 'ok') {
+                const data = res.data.map((item) => ({
+                    id: item._id,
+                    email: item.email,
+                    fullName: item.fullName,
+                    phoneNumber: item.phoneNumber,
+                    dateOfBirth: dayjs(new Date(item.dateOfBirth)).format('DD/MM/YYYY'), // Chỉ lấy ngày
+                    cccd: item.cccd,
+                    degreeCertificates: item.degreeCertificates, // Dữ nguyên danh sách ảnh
+                    expertiseAreas: item.expertiseAreas,
+                }));
+                setDataSource(data);
+            }
+        } catch (error) {}
+    };
+    const handleShowDialog = (record) => {
+        setInfo(record);
+        setOpen(true);
+    };
+    const handleDelete = async (item) => {
+        try {
+            setLoading(true);
+            const res = await post('/in-re/non-accept', {
+                _id: info.id,
+                fullName: info.fullName,
+                email: info.email,
+            });
+            if (res.status === 'ok') {
+                toastSuccess('Thành công');
+                loadData();
+            }
+        } catch (error) {
+        } finally {
+            setOpen(false);
+            setLoading(false);
+            setInfo(null);
+        }
+    };
+    const handleAccept = async (record) => {
+        try {
+            console.log(record);
+
+            const res = await post('/in-re/accept', {
+                _id: record.id,
+                email: record.email,
+                fullName: record.fullName,
+                phoneNumber: record.phoneNumber,
+                dateOfBirth: record.dateOfBirth,
+            });
+            if (res.status == 'ok') {
+                toastSuccess('Thành công');
+                loadData();
+            }
+        } catch (error) {}
+    };
     const columns = [
         {
             title: 'Email',
@@ -41,7 +108,18 @@ function AcceptInstructor() {
             title: 'Bằng cấp',
             dataIndex: 'degreeCertificates',
             key: 'degreeCertificates',
-            render: (certificates) => certificates.join(', '),
+            render: (certificates) => (
+                <>
+                    {certificates.map((certificate, index) => (
+                        <Image
+                            key={index}
+                            src={`${PATH_MEDIA}${certificate}`}
+                            alt={`Certificate ${index + 1}`}
+                            style={{ width: '50px', height: '50px', marginRight: '5px' }} // Thay đổi kích thước theo nhu cầu
+                        />
+                    ))}
+                </>
+            ),
             width: '15%',
         },
         {
@@ -57,8 +135,8 @@ function AcceptInstructor() {
             width: '10%',
             render: (record) => (
                 <div className="flex space-x-1 justify-evenly">
-                    {/* <Tooltip title="Chỉnh sửa">
-                        <button onClick={() => handleEdit(record)}>
+                    <Tooltip title="Xác nhận">
+                        <button onClick={() => handleAccept(record)}>
                             <RiEdit2Line className="text-14 text-primary" />
                         </button>
                     </Tooltip>
@@ -66,43 +144,26 @@ function AcceptInstructor() {
                         <button onClick={() => handleShowDialog(record)}>
                             <RiDeleteBinLine className="text-14 text-danger" />
                         </button>
-                    </Tooltip> */}
+                    </Tooltip>
                 </div>
             ),
         },
     ];
-    const dataSource = [
-        {
-            email: 'nguyenvana@example.com',
-            fullName: 'Nguyễn Văn A',
-            phoneNumber: '0123456789',
-            dateOfBirth: '1990-01-01',
-            cccd: '123456789012',
-            degreeCertificates: ['Cử nhân Công nghệ Thông tin', 'Thạc sĩ AI'],
-            expertiseAreas: ['Lập trình Web', 'Machine Learning'],
-        },
-        {
-            email: 'tranthib@example.com',
-            fullName: 'Trần Thị B',
-            phoneNumber: '0987654321',
-            dateOfBirth: '1992-02-15',
-            cccd: '098765432109',
-            degreeCertificates: ['Cử nhân Kinh tế', 'Chứng chỉ Digital Marketing'],
-            expertiseAreas: ['SEO', 'Marketing Online'],
-        },
-        {
-            email: 'phamc@example.com',
-            fullName: 'Phạm C',
-            phoneNumber: '0345678912',
-            dateOfBirth: '1985-03-10',
-            cccd: '567890123456',
-            degreeCertificates: ['Cử nhân Kế toán'],
-            expertiseAreas: ['Kế toán tài chính'],
-        },
-    ];
+
+    useEffect(() => {
+        loadData();
+    }, []);
 
     return (
         <div>
+            <Dialog
+                title={'Xóa'}
+                content={'Bạn có chắc chắn muốn xóa'}
+                handleOk={handleDelete}
+                open={open}
+                confirmLoading={loading}
+                setOpen={setOpen}
+            />
             <Table
                 columns={columns}
                 dataSource={dataSource}

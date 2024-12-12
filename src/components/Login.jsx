@@ -28,7 +28,7 @@ function Login() {
                 const data = response.data;
                 console.log(data);
                 localStorage.username = data.name;
-                localStorage.userId = data.user;
+                localStorage.userId = data.user._id;
                 localStorage.avatar = data.avatar;
                 localStorage.profileId = data._id;
                 localStorage.role = data.user.role;

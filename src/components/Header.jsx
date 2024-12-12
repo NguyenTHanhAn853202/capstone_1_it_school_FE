@@ -64,6 +64,16 @@ function Header() {
                                         </Link>
                                     </>
                                 )}
+                                {localStorage.role === 'ADMIN' && (
+                                    <>
+                                        <Link className="text-10" to={pathname.ACCEPT_INSTRUCTOR}>
+                                            Duyệt tài khoản giảng viên
+                                        </Link>
+                                        <Link className="text-10" to={pathname.ACCOUNT_MANAGEMENT}>
+                                            Quản lý tài khoản
+                                        </Link>
+                                    </>
+                                )}
                                 <Link className="text-10" to={pathname.PROFILE}>
                                     Thông tin cá nhân
                                 </Link>
