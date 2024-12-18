@@ -21,10 +21,16 @@ function MenuChat({ setMenu, groupId, setGroupId, setMyGroup }) {
     const [openDeleteGroup, setOpenDeleteGroup] = useState(false);
     const [loadingDeleteGroup, setLoadingDeleteGroup] = useState(false);
     const [show, setShow] = useState(false);
+    const [idRemove, setIdRemove] = useState(null);
     const handleShowMember = () => {
         setShow(!show);
     };
+    const handleShareGroup = async () => {
+        await navigator.clipboard.writeText('http://localhost:8000/api/study-group/join/' + groupId);
+    };
     const handleRemoveMember = async (memberId) => {
+        console.log(idRemove);
+
         try {
             setRemoveMember({ ...removeMember, loading: true });
             const data = await post('/study-group/remove-profile-group', {
@@ -32,12 +38,12 @@ function MenuChat({ setMenu, groupId, setGroupId, setMyGroup }) {
                 groupChatId: groupId,
             });
             console.log(data);
-
-            data.status === 'ok' && setMembers(members.filter((member) => member._id != memberId));
+            data.status === 'ok' && setMembers(members.filter((member) => member._id != idRemove));
         } catch (error) {
             console.log(error.message);
         } finally {
             setRemoveMember({ open: false, loading: false });
+            setIdRemove(null);
         }
     };
     const handelOutGroup = async () => {
@@ -87,6 +93,8 @@ function MenuChat({ setMenu, groupId, setGroupId, setMyGroup }) {
                         data.status == 'ok' && listMembers.push(data.data);
                     }
                 }
+                console.log(listMembers);
+
                 setMembers(listMembers);
             } catch (error) {
                 console.log(error.message);
@@ -121,36 +129,45 @@ function MenuChat({ setMenu, groupId, setGroupId, setMyGroup }) {
                 </div>
             </div>
             <div className="bg-white py-2 mt-2 px-2 space-y-2">
-                {members.map((item, i) => (
-                    <div className="flex justify-between">
-                        <div className="flex items-center">
-                            <Avatar src={PATH_MEDIA + item.avatar} size={35} />
-                            <div className="ml-1">
-                                <h4 className="max-w-[130px] truncate">{item.name}</h4>
-                                <h4>{infoGroup?.groupChat.createdBy === item._id ? 'Quản trị viên' : 'Thành viên'}</h4>
+                {members.map((item, i) => {
+                    console.log(item);
+
+                    return (
+                        <div key={item._id} className="flex justify-between">
+                            <div className="flex items-center">
+                                <Avatar src={PATH_MEDIA + item.avatar} size={35} />
+                                <div className="ml-1">
+                                    <h4 className="max-w-[130px] truncate">{item.name}</h4>
+                                    <h4>
+                                        {infoGroup?.groupChat.createdBy === item._id ? 'Quản trị viên' : 'Thành viên'}
+                                    </h4>
+                                </div>
                             </div>
+                            <Dialog
+                                content={'Bạn có chắc chắn muốn xóa'}
+                                title={'Xóa thành viên'}
+                                confirmLoading={removeMember.loading}
+                                open={removeMember.open}
+                                handleOk={() => handleRemoveMember(item._id)}
+                                setOpen={(value) => {
+                                    setRemoveMember((pre) => ({ ...pre, open: value }));
+                                }}
+                            />
+                            {infoGroup?.groupChat.createdBy === localStorage.profileId &&
+                                infoGroup?.groupChat.createdBy !== item._id && (
+                                    <button
+                                        onClick={() => {
+                                            setRemoveMember((pre) => ({ ...pre, open: true }));
+                                            setIdRemove(item._id);
+                                        }}
+                                        className="italic"
+                                    >
+                                        Xóa
+                                    </button>
+                                )}
                         </div>
-                        <Dialog
-                            content={'Bạn có chắc chắn muốn xóa'}
-                            title={'Xóa thành viên'}
-                            confirmLoading={removeMember.loading}
-                            open={removeMember.open}
-                            handleOk={() => handleRemoveMember(item._id)}
-                            setOpen={(value) => {
-                                setRemoveMember((pre) => ({ ...pre, open: value }));
-                            }}
-                        />
-                        {infoGroup?.groupChat.createdBy === localStorage.profileId &&
-                            infoGroup?.groupChat.createdBy !== item._id && (
-                                <button
-                                    onClick={() => setRemoveMember((pre) => ({ ...pre, open: true }))}
-                                    className="italic"
-                                >
-                                    Xóa
-                                </button>
-                            )}
-                    </div>
-                ))}
+                    );
+                })}
 
                 {/* <div className="flex items-center justify-between ">
                     <h2>Ảnh</h2>
@@ -203,14 +220,16 @@ function MenuChat({ setMenu, groupId, setGroupId, setMyGroup }) {
                 confirmLoading={loadingOut}
                 setOpen={setOpenOut}
             />
-            <button
-                className="block w-full text-center py-1 mt-1 bg-white shadow-lg"
-                onClick={() => {
-                    setOpenOut(true);
-                }}
-            >
-                Thoát nhóm
-            </button>
+            {localStorage.profileId !== infoGroup?.groupChat.createdBy && (
+                <button
+                    className="block w-full text-center py-1 mt-1 bg-white shadow-lg"
+                    onClick={() => {
+                        setOpenOut(true);
+                    }}
+                >
+                    Thoát nhóm
+                </button>
+            )}
             <Dialog
                 content={'Bạn có chắc chắn muốn xóa nhóm'}
                 title={'Xóa nhóm chát'}
@@ -220,14 +239,22 @@ function MenuChat({ setMenu, groupId, setGroupId, setMyGroup }) {
                 setOpen={setOpenDeleteGroup}
             />
             {localStorage.profileId === infoGroup?.groupChat.createdBy && (
-                <button
-                    className="block w-full text-center py-1 mt-1 bg-white shadow-lg"
-                    onClick={() => {
-                        setOpenDeleteGroup(true);
-                    }}
-                >
-                    Xóa nhóm
-                </button>
+                <>
+                    <button
+                        className="block w-full text-center py-1 mt-1 bg-white shadow-lg"
+                        onClick={handleShareGroup}
+                    >
+                        Copy link
+                    </button>
+                    <button
+                        className="block w-full text-center py-1 mt-1 bg-white shadow-lg"
+                        onClick={() => {
+                            setOpenDeleteGroup(true);
+                        }}
+                    >
+                        Xóa nhóm
+                    </button>
+                </>
             )}
         </div>
     );

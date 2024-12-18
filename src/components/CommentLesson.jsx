@@ -28,7 +28,7 @@ function CommentLesson({}) {
             }
         })();
     }, [lessonId]);
-    console.log(comments[0]?.comment);
+
 
     const hanldeMoreComment = async () => {
         if (!showMore) {
@@ -54,7 +54,10 @@ function CommentLesson({}) {
     return (
         <div className="rounded-xl space-y-4">
             <h1 className="font-bold text-12">{count} bình luận</h1>
-            <CommentLS setComments={setComments} avatar={avatar} />
+            <CommentLS
+                setComments={setComments}
+                avatar={localStorage.avatar ? PATH_MEDIA + localStorage.avatar : avatar}
+            />
             <div className="mt-4"></div>
             <div className="space-y-2">
                 {comments.map((item) => (

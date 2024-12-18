@@ -12,12 +12,17 @@ import { get, post } from '~/database';
 import { PATH_MEDIA } from '~/utils/secret';
 import { isObject } from 'formik';
 import Dialog from './Dialog';
-import { toastInfo } from '~/utils/toasty';
+import { toastError, toastInfo, toastSuccess } from '~/utils/toasty';
 import parseMeetingData from '~/utils/parseZoom';
 import { socket } from '~/utils/socket';
 import formatDateTime from '~/utils/formatDatetime';
+import dayjs from 'dayjs';
+import { DatePicker } from 'antd';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 
-function ChatDialog({ setMenu, groupId = '', setGroupId }) {
+dayjs.extend(customParseFormat);
+
+function ChatDialog({ setMenu, groupId = '', setGroupId, setIsLoadData }) {
     const messageContainer = useRef(null);
     const [showEmoji, setShowEmoji] = useState(false);
     const [message, setMessage] = useState('');
@@ -29,6 +34,9 @@ function ChatDialog({ setMenu, groupId = '', setGroupId }) {
     const [loading, setLoading] = useState(false);
     const [listMember, setListMember] = useState([]);
     const [username, setUsername] = useState('');
+    const [openMeetings, setOpenMeetings] = useState(false);
+    const [loadingMeeting, setLoadingMeeting] = useState(false);
+    const [dateMeeting, setDateMeeting] = useState(new Date());
 
     const handleShowMenu = () => {
         setMenu((pre) => (pre ? false : 1));
@@ -57,16 +65,17 @@ function ChatDialog({ setMenu, groupId = '', setGroupId }) {
     const handleSubmitMember = async () => {
         try {
             setLoading(true);
-            console.log(listMember);
-
             for (let member of listMember) {
-                await post('/study-group/add-profile-group', {
+                const data = await post('/study-group/add-profile-group', {
                     username: member.user.username,
                     groupChatId: groupId,
                 });
+                if (data.response.data.status === 'error') {
+                    toastError(data.response.data.message);
+                }
             }
         } catch (error) {
-            console.log(error.message);
+            toastError(data.message);
         } finally {
             setLoading(false);
             setOpen(false);
@@ -86,6 +95,7 @@ function ChatDialog({ setMenu, groupId = '', setGroupId }) {
             if (data.status === 'ok') {
                 // setMessages([...messages, data.data]);
                 setMessage('');
+                setIsLoadData((pre) => pre + 1);
             } else {
                 toastInfo('Bạn không còn là thành viên của nhóm');
             }
@@ -100,13 +110,17 @@ function ChatDialog({ setMenu, groupId = '', setGroupId }) {
 
     const handleCreateMeeting = async () => {
         try {
-            const meeting = await get('/zoom/create?groupChatId=' + groupId);
-            console.log(meeting);
-            if (meeting?.status === 'ok') {
+            setLoadingMeeting(true);
+            const meeting = await get(`/zoom/schedule?scheduledTime=${dateMeeting}&groupChatId=${groupId}`);
+            if (meeting?.url) {
                 window.open(meeting.url, '_blank');
             }
         } catch (error) {
             console.log(error.message);
+        } finally {
+            setLoadingMeeting(false);
+            setOpenMeetings(false);
+            setDateMeeting(new Date());
         }
     };
 
@@ -121,10 +135,8 @@ function ChatDialog({ setMenu, groupId = '', setGroupId }) {
         if (!groupId) return;
 
         const handleSocketEvent = (data) => {
-            console.log(messages);
             setMessages((pre) => [...pre, data.data]);
-
-            console.log(data.data);
+            setIsLoadData((pre) => pre + 1);
         };
 
         socket.on(groupId, handleSocketEvent);
@@ -133,6 +145,8 @@ function ChatDialog({ setMenu, groupId = '', setGroupId }) {
             socket.off(groupId, handleSocketEvent); // Hủy đăng ký sự kiện cũ khi groupId thay đổi
         };
     }, [groupId]); // Chỉ chạy lại khi groupId thay đổi
+
+    console.log(dateMeeting);
 
     // xử lý upload file và img
     return (
@@ -198,7 +212,33 @@ function ChatDialog({ setMenu, groupId = '', setGroupId }) {
                             >
                                 <MdGroupAdd className="opacity-60" size={'1.5rem'} />
                             </button>
-                            <button onClick={handleCreateMeeting}>
+                            <Dialog
+                                confirmLoading={loadingMeeting}
+                                content={
+                                    <DatePicker
+                                        defaultValue={dayjs(new Date())}
+                                        format="DD/MM/YYYY HH:mm"
+                                        showTime={{
+                                            format: 'HH:mm',
+                                        }}
+                                        onOk={(value) => {
+                                            if (value) {
+                                                setDateMeeting(value.toDate());
+                                            }
+                                        }}
+                                        minDate={dayjs(new Date())}
+                                    />
+                                }
+                                open={openMeetings}
+                                setOpen={setOpenMeetings}
+                                title={'Chọn thời gian'}
+                                handleOk={handleCreateMeeting}
+                            />
+                            <button
+                                onClick={() => {
+                                    setOpenMeetings(true);
+                                }}
+                            >
                                 <BsFillCameraVideoFill className="opacity-60" size={'1.5rem'} />
                             </button>
                             <button onClick={handleShowMenu}>
@@ -211,9 +251,11 @@ function ChatDialog({ setMenu, groupId = '', setGroupId }) {
                             {messages.map((item, index) => {
                                 let url = '';
                                 let passwordMeeting = '';
+                                let start;
                                 if (item.type == 'linkMeeting') {
-                                    const { joinUrl, password } = parseMeetingData(item.content);
+                                    const { StartTime, password, joinUrl } = JSON.parse(item.content);
                                     url = joinUrl;
+                                    start = dayjs(StartTime).format('DD/MM/YYYY HH:mm');
                                     passwordMeeting = password;
                                 }
                                 return item.sender._id !== localStorage.profileId ? (
@@ -235,10 +277,13 @@ function ChatDialog({ setMenu, groupId = '', setGroupId }) {
                                             {item.type == 'linkMeeting' && (
                                                 <div>
                                                     <p>
-                                                        Link:{' '}
+                                                        <p>Meeting</p>
+                                                        Link:
                                                         <a href={url} target="_blank">
                                                             Tham gia
                                                         </a>
+                                                        <p>Password: {passwordMeeting}</p>
+                                                        <p>Time: {start}</p>
                                                     </p>
                                                 </div>
                                             )}
@@ -270,10 +315,13 @@ function ChatDialog({ setMenu, groupId = '', setGroupId }) {
                                                 {item.type == 'linkMeeting' && (
                                                     <div>
                                                         <p>
-                                                            Link:{' '}
+                                                            <p>Meeting</p>
+                                                            Link:
                                                             <a href={url} target="_blank">
                                                                 Tham gia
                                                             </a>
+                                                            <p>Password: {passwordMeeting}</p>
+                                                            <p>Time: {start}</p>
                                                         </p>
                                                     </div>
                                                 )}
@@ -334,7 +382,7 @@ function ChatDialog({ setMenu, groupId = '', setGroupId }) {
                                 id={fileId}
                             />
                         </div>
-                        <form onSubmit={handleChat} className="h-[60%] flex items-center justify-between px-2">
+                        <form onSubmit={handleChat} className="h-[60%] flex items-center justify-between px-4">
                             {isObject(message) ? (
                                 <div className="flex items-center space-x-1 ">
                                     {message?.type?.startsWith('image') ? (
@@ -353,7 +401,7 @@ function ChatDialog({ setMenu, groupId = '', setGroupId }) {
                                 </div>
                             ) : (
                                 <input
-                                    className="h-full text-10"
+                                    className="h-full flex-1 text-10 pr-2"
                                     placeholder="Nhập tin nhắn"
                                     value={message}
                                     onChange={(e) => {

@@ -119,11 +119,11 @@ function InstructorRegister({ setInstructor }) {
                         </label>
                         <label>
                             <span className="block">Ngày sinh</span>
-                            <DatePicker
-                                dateFormat="dd/MM/YYYY"
-                                onChange={(date) => setStartDate(date)}
-                                selected={startDate}
-                                placeholderText="Nhập ngày sinh"
+                            <InputDateTime
+                                width={"100px"}
+                                startDate={startDate}
+                                setStartDate={setStartDate}
+                                placeholder="Nhập ngày sinh"
                             />
                         </label>
                     </div>

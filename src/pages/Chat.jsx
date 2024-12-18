@@ -38,6 +38,7 @@ function Chat() {
     const idIp = useId();
     const [myGroup, setMyGroup] = useState([]);
     const [groupId, setGroupId] = useState('');
+    const [isLoadData, setIsLoadData] = useState(0);
 
     const handleChangeImage = (e) => {
         setImage(e.target.files[0]);
@@ -79,6 +80,7 @@ function Chat() {
                 setImage('');
                 setImageUrl('');
                 setUsername('');
+                loadData();
             } else {
                 toastError('Tạo nhóm thất bại');
             }
@@ -89,13 +91,13 @@ function Chat() {
             setListMember([]);
         }
     };
-
+    const loadData = async () => {
+        const response = await get('/study-group/list');
+        response.status === 'ok' && response.data.groups && setMyGroup(response.data.groups);
+    };
     useEffect(() => {
-        (async () => {
-            const response = await get('/study-group/list');
-            response.status === 'ok' && response.data.groups && setMyGroup(response.data.groups);
-        })();
-    }, []);
+        loadData();
+    }, [isLoadData]);
     console.log(myGroup);
 
     return (
@@ -194,22 +196,26 @@ function Chat() {
                                     setGroupId(groupChat._id);
                                 }}
                                 key={groupChat._id}
-                                className="flex space-x-2"
+                                className={`flex space-x-2 `}
                             >
                                 <img className="!size-[40px] block rounded-full" src={PATH_MEDIA + groupChat.avatar} />
-                                <div className="w-[60%]">
+                                <div className="w-[50%]">
                                     <h2 className="font-bold truncate">{groupChat.groupName}</h2>
-                                    <p className="opacity-80 truncate w-[90%]">
+                                    <p
+                                        className={`opacity-80 truncate w-[90%] ${
+                                            !item.unreadCount ? 'font-medium' : ''
+                                        }`}
+                                    >
                                         {lastMessage?.sender?.name && `${lastMessage?.sender?.name}: `}
-                                        {lastMessage?.content}
+                                        {lastMessage?.type === 'linkMeeting' ? 'Meeting' : lastMessage?.content}
                                     </p>
                                 </div>
-                                <div className="">
-                                    <p>{lastMessage?.createdAt && timeAgo(lastMessage.createdAt)}</p>
-                                    {item.unreadCount > 0 && (
-                                        <span className=" px-1 text-[0.8rem] rounded-md bg-red text-white">
-                                            +{item.unreadCount}
-                                        </span>
+                                <div className="flex-1">
+                                    <p className={`text-center ${!item.unreadCount ? 'font-medium' : ''}`}>
+                                        {lastMessage?.createdAt && timeAgo(lastMessage.createdAt)}
+                                    </p>
+                                    {!item.unreadCount && (
+                                        <span className="size-[5px] mt-1 m-auto block text-[0.8rem] rounded-full bg-red text-white"></span>
                                     )}
                                 </div>
                             </div>
@@ -217,7 +223,7 @@ function Chat() {
                     })}
                 </div>
             </div>
-            <ChatDialog groupId={groupId} setMenu={setMenuChat} />
+            <ChatDialog setIsLoadData={setIsLoadData} groupId={groupId} setMenu={setMenuChat} />
             {menuChat &&
                 (menuChat == 1 ? (
                     <MenuChat setMenu={setMenuChat} setMyGroup={setMyGroup} groupId={groupId} setGroupId={setGroupId} />

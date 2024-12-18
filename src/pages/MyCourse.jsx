@@ -19,7 +19,7 @@ function MyCourse() {
             <h1 className="text-12 font-bold">Khóa học của tôi</h1>
             <div className="flex flex-wrap">
                 {courses.map((data, index) => (
-                    <div key={index} className="w-[48%] my-2 mr-2 ml-2 ">
+                    <div key={index} className="w-[47%] my-2 mr-2 ml-2 ">
                         <CardCourse data={data} />
                     </div>
                 ))}

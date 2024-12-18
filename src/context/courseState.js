@@ -12,8 +12,7 @@ const initState = {
 const numberRegex = /^\d+$/;
 
 const handlePrice = (value, state) => {
-    if (numberRegex.test(value) || value.length === 0)
-        return { course: { ...state.course, price: value ? +value : '' } };
+    if (numberRegex.test(value)) return { course: { ...state.course, price: value ? +value : 0 } };
     return state;
 };
 

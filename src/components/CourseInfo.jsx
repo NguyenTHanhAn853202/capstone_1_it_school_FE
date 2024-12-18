@@ -6,6 +6,7 @@ import ShowMore from '~/components/ShowMore';
 import Star from '~/components/Star';
 import { get, post } from '~/database';
 import avatarDefault from '~/public/media/images/default_avatar.jpg';
+import { pathname } from '~/routes/pathname';
 import { formatPrice } from '~/utils/formatPrice';
 import { PATH_MEDIA } from '~/utils/secret';
 import { socket } from '~/utils/socket';
@@ -17,6 +18,7 @@ function CourseInfo() {
     const { id } = useParams();
     const [courseInfo, setCourseInfo] = useState();
     const [lessons, setLessons] = useState([]);
+    const [totalLessons, setTotalLessons] = useState(0);
     const [isEnroll, setIsEnroll] = useState(false);
     const navigate = useNavigate();
 
@@ -24,6 +26,7 @@ function CourseInfo() {
         socket.on(`payment-${localStorage.profileId}`, (data) => {
             if (data.code === 100) {
                 toastSuccess('Thanh Toán thành công');
+                setIsEnroll(true);
             }
         });
     }, []);
@@ -31,7 +34,7 @@ function CourseInfo() {
     useEffect(() => {
         (async () => {
             try {
-                const response = await get(`/course/get-course/${id}?userId=${localStorage.profileId}`);
+                const response = await get(`/course/get-course/${id}?profileId=${localStorage.profileId || null}`);
                 const lessonsResponse = await get(`/lesson/lessons/${id}`);
                 if (lessonsResponse.status === 'ok') {
                     const data = lessonsResponse.data;
@@ -40,6 +43,7 @@ function CourseInfo() {
                     } else {
                         setLessons(data);
                     }
+                    setTotalLessons(data.length);
                 }
                 console.log(response);
 
@@ -54,6 +58,10 @@ function CourseInfo() {
     }, [id]);
 
     const handleEnroll = async () => {
+        if (!localStorage.profileId) {
+            navigate(pathname.EXPERIENCE);
+            return;
+        }
         if (isEnroll) {
             console.log(lessons[0]);
             lessons[0]?._id ? navigate('/lesson/' + lessons[0]?._id) : toastInfo('Khóa học chưa có bài học nào');
@@ -109,7 +117,7 @@ function CourseInfo() {
                                 <p>{`${index + 1}. ${item?.title}`}</p>
                             </li>
                         ))}
-                        {lessons.length > 3 && (
+                        {totalLessons > 3 && (
                             <li>
                                 <ShowMore
                                     onClick={handleMoreLessons}

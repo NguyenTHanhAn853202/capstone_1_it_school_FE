@@ -16,6 +16,7 @@ import { PATH_MEDIA } from '~/utils/secret';
 import { toastInfo } from '~/utils/toasty';
 import Webcam from 'react-webcam';
 import axios from 'axios';
+import loading from '~/public/media/loading/laoding_video.gif';
 
 function DetailLesson() {
     const webcamRef = useRef(null);
@@ -40,6 +41,7 @@ function DetailLesson() {
         position: 1,
         course: '',
     });
+    const [countAPI, setCountAPI] = useState(0);
     const [quiz, setQuiz] = useState([]);
     const [currentQuiz, setCurrentQuiz] = useState(null);
     const [answer, setAnswer] = useState(null);
@@ -66,12 +68,11 @@ function DetailLesson() {
                 const file = new File([blob], 'webcam-image.jpg', {
                     type: 'image/jpeg',
                 });
-                console.log(file);
 
                 const formData = new FormData();
                 formData.append('image', file);
                 const data = await axios.post('http://127.0.0.1:5000/detect', formData, {});
-                console.log(data.data.status);
+                console.log(data.data);
                 if (data.data.status === 'Closed') {
                     setCount((pre) => pre + 1);
                 } else {
@@ -79,16 +80,24 @@ function DetailLesson() {
                         setCount((pre) => pre - 1);
                     }
                 }
-                console.log(count);
-                if (count > 30) {
-                    const speak = new SpeechSynthesisUtterance('warning');
-                    window.speechSynthesis.speak(speak);
-                }
             } catch (error) {
                 console.error('Error sending image:', error);
             }
         }
     };
+
+    useEffect(() => {
+        if (count > 1) {
+            console.log('stop di e');
+            toastInfo('Tập trụng học nha.');
+            const speak = new SpeechSynthesisUtterance('warning');
+            window.speechSynthesis.speak(speak);
+            videoRef.current.pause();
+            setCount(0);
+        }
+    }, [count]);
+
+    console.log(count);
 
     useEffect(() => {
         (async () => {
@@ -108,8 +117,10 @@ function DetailLesson() {
         (async () => {
             try {
                 const response = await get(`/lesson/lessons-of-course/${videoData.course?._id}`);
+
                 if (response?.status === 'ok') {
                     const data = response.data;
+
                     setListLessons(data);
                 } else {
                     console.log('Error get course');
@@ -119,8 +130,16 @@ function DetailLesson() {
             }
         })();
     }, [videoData.course?._id]);
-    const handleQuizInteraction = (e) => {
-        captureAndSend();
+    console.log(quiz);
+
+    useEffect(() => {
+        if (lastTime > countAPI * 5) {
+            captureAndSend();
+            setCountAPI(countAPI + 1);
+        }
+    }, [lastTime]);
+
+    const handleQuizInteraction = async (e) => {
         const value = e.target;
         if (value.currentTime < lastTime + 1 || value.currentTime < maxTime) {
             setLastTime(value.currentTime);
@@ -163,6 +182,7 @@ function DetailLesson() {
     const handleOnPause = async () => {
         console.log('pause');
         setCount(0);
+        setCountAPI(0);
     };
 
     return (
@@ -183,6 +203,9 @@ function DetailLesson() {
                         }}
                     >
                         <img
+                            onError={(e) => {
+                                e.target.src = loading;
+                            }}
                             src={`${PATH_MEDIA}${videoData.thumbnailUrl}`}
                             className={`w-full h-full absolute ${!thumbnail && 'hidden'}`}
                         />
@@ -223,7 +246,7 @@ function DetailLesson() {
                 </div>
                 <h2 className="font-bold mt-3 text-12">{`${videoData.position}. ${videoData.title}`}</h2>
                 <div className="flex items-center space-x-2 mt-3 ">
-                    <Avatar url={avatar} />
+                    <Avatar url={PATH_MEDIA + videoData?.course?.instructor?.avatar} />
                     <h2 className="font-bold">{videoData?.course?.instructor?.name}</h2>
                 </div>
 
@@ -280,8 +303,9 @@ function DetailLesson() {
                             image={item.thumbnailUrl}
                             id={item._id}
                             time={120}
+                            videoUrl={item.videoUrl}
                             title={`${item.position}. ${item.title}`}
-                            view={60}
+                            view={item.comment}
                             key={i}
                         />
                     ))}

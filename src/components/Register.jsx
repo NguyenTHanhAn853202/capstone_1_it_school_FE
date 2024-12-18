@@ -50,7 +50,7 @@ function Register() {
             });
             if (response.status === 'ok') {
                 toastSuccess('Đăng ký thành công');
-                navigate('/');
+                navigate(pathname.EXPERIENCE);
             }
             const errorMessage = response?.response?.data?.message;
             toastError(errorMessage);

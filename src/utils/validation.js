@@ -17,7 +17,7 @@ export const changePasswordValidation = Yup.object({
 export const postValidation = Yup.object({
     title: Yup.string().min(3, 'Tiêu đề lớn hơn 3 ký tự').required('Vui lòng nhập đủ thông tin'),
     content: Yup.string().min(3, 'Tiêu đề lớn hơn 3 ký tự').required('Vui lòng nhập đủ thông tin'),
-    categoryId: Yup.string().required('Vui lòng chọn chuyên mục'),
+    categoryId: Yup.string().required('Vui lòng chọn loại bài'),
 });
 
 export const validateInstructor = Yup.object({

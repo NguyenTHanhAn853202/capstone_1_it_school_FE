@@ -17,6 +17,11 @@ function CreateCourse() {
     const clearLessons = useLesson.getState().clearLessons;
     const clearCourse = useCourse.getState().clear;
 
+    useEffect(() => {
+        clearCourse();
+        clearLessons();
+    }, []);
+
     const handlSubmitCourse = async () => {
         try {
             const formData = new FormData();
@@ -83,11 +88,14 @@ function CreateCourse() {
                 // clearCourse();
                 const listErr = [];
                 listResponse.forEach((item, index) => {
-                    if (item.status === 'error') listErr(index);
+                    if (item?.response || item.status === 'error') listErr.push(index + 1);
                 });
-                if (listResponse.length !== listErr.length) toastSuccess('Xử lý thành công');
-                else toastError('Đã xãy ra lỗi ở bài: ' + listErr.join(', '));
+                if (listErr.length === 0) {
+                    toastSuccess('Xử lý thành công');
+                } else toastError('Đã xãy ra lỗi ở bài: ' + listErr.join(', '));
             }
+            clearLessons();
+            clearCourse();
         } catch (error) {
             console.log(error.message);
             toastError(error.message);

@@ -48,7 +48,7 @@ function SideBar() {
             <div className="pl-[20px] pr-[10px] flex mt-1">
                 <button className="py-[10px] px-[5px] hover:bg-mark hover:opacity-60 rounded-xl w-full text-[1.1rem] font-bold flex items-center gap-1">
                     <IoLogInOutline className="text-[1.4rem]" />
-                    <span onClick={handleLogout}>Logout</span>
+                    <button onClick={handleLogout}>Logout</button>
                 </button>
             </div>
         </nav>

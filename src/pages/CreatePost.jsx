@@ -5,7 +5,7 @@ import { AiOutlineUpload } from 'react-icons/ai';
 import InputNoBorder from '~/components/InputNoBorder';
 import TextEditor from '~/components/TextEditor';
 import { get, post } from '~/database';
-import { toastError, toastSuccess } from '~/utils/toasty';
+import { toastError, toastInfo, toastSuccess } from '~/utils/toasty';
 import { postValidation } from '~/utils/validation';
 
 function CreatePost() {
@@ -31,6 +31,10 @@ function CreatePost() {
                 content: content,
                 categoryId: categoryId,
             });
+            if (image.length === 0) {
+                toastInfo('Vui lòng chọn hình ảnh');
+                return;
+            }
             const formData = new FormData();
             formData.append('title', title);
             formData.append('content', content);
@@ -52,7 +56,11 @@ function CreatePost() {
                 toastError('Tạo bài viết thất bại!');
             }
         } catch (error) {
-            console.log(error.message);
+            if (error.name === 'ValidationError') {
+                toastInfo(error.message);
+            } else {
+                console.log('Đã xảy ra lỗi');
+            }
         }
     };
 

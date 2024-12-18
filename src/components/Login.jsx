@@ -7,6 +7,7 @@ import { get, post } from '~/database';
 import { useState } from 'react';
 import { object } from 'yup';
 import { toastError, toastInfo } from '~/utils/toasty';
+import { Spin } from 'antd';
 const logo = [logoFacebook, logoGoogle, logoGithub];
 
 function Login() {
@@ -15,9 +16,11 @@ function Login() {
         username: '',
         password: '',
     });
+    const [loading, setLoading] = useState(false);
 
     const handleSubmitLogin = async (e) => {
         try {
+            setLoading(true);
             e.preventDefault();
             const response = await post('/user/login', {
                 username: login.username,
@@ -26,7 +29,6 @@ function Login() {
             response.status === 'info' && toastInfo(response.message);
             if (response?.status === 'ok') {
                 const data = response.data;
-                console.log(data);
                 localStorage.username = data.name;
                 localStorage.userId = data.user._id;
                 localStorage.avatar = data.avatar;
@@ -37,6 +39,8 @@ function Login() {
             response?.response?.data?.message && toastError('Đăng nhập thất bại vui lòng kiểm tra lại');
         } catch (error) {
             console.log(error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -67,7 +71,7 @@ function Login() {
                     </div>
                     <div className="flex justify-center">
                         <Button styles="font-light text-[1rem] h-[35px] w-[190px] bg-button_green py-[5px] mt-[10px] ">
-                            Đăng Nhập
+                            {loading ? <Spin /> : 'Đăng Nhập'}
                         </Button>
                     </div>
                 </form>

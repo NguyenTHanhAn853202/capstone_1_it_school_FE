@@ -10,6 +10,9 @@ import { PATH_MEDIA } from '~/utils/secret';
 import { useNavigate } from 'react-router-dom';
 import { toastSuccess } from '~/utils/toasty';
 import { useStore } from '~/hook/store';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+dayjs.extend(customParseFormat);
 
 function Profile() {
     const idInput = useId();
@@ -17,6 +20,7 @@ function Profile() {
     const imgRef = useRef();
     const navigate = useNavigate();
     const setAvatar = useStore((state) => state.setAvatar);
+    console.log(setAvatar);
 
     const [{ username, address, phoneNumber, email, avatarUrl, avatar }, setInformation] = useState({
         username: '',
@@ -44,9 +48,11 @@ function Profile() {
                 },
             });
             response?.response?.data?.message && toastSuccess(response.response.data.message);
+
             if (response?.status === 'ok') {
                 localStorage.avatar = response.data.avatar;
-                setAvatar(avatar && URL.createObjectURL(avatar));
+                setAvatar(URL.createObjectURL(avatar));
+
                 toastSuccess(response.message);
             }
         } catch (error) {}
@@ -54,12 +60,15 @@ function Profile() {
 
     const handleChangeAvatar = (e) => {
         const file = e.target.files[0];
-        imgRef.current.src = URL.createObjectURL(file);
+        imgRef.current.src = '';
+        const url = URL.createObjectURL(file);
+
+        imgRef.current.src = url;
         setInformation((props) => ({ ...props, avatar: file }));
     };
 
     const handleErrorImg = (e) => {
-        e.target.src = typeof avatar === 'string' ? avatar : URL.createObjectURL(avatar);
+        // e.target.src = typeof avatar === 'string' ? avatar : URL.createObjectURL(avatar);
     };
 
     useEffect(() => {
@@ -74,6 +83,7 @@ function Profile() {
                     email: data.email,
                     address: data.address,
                 });
+                imgRef.current.src = `${PATH_MEDIA}${data.avatar}`;
                 setStartDate(data.birthday);
             }
         })();
@@ -87,9 +97,9 @@ function Profile() {
                 </button>
                 <form onSubmit={handleSubmit} className="w-[600px] h-[500px] absolute left-[50%] -translate-x-[50%]">
                     <img
-                        onError={handleErrorImg}
+                        // onError={handleErrorImg}
                         ref={imgRef}
-                        src={`${PATH_MEDIA}/${avatar}`}
+                        // src={`${PATH_MEDIA}${avatar}`}
                         className="size-[70px] rounded-3xl block m-auto border border-solid border-dark"
                     />
                     <input

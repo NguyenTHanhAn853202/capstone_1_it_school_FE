@@ -11,7 +11,7 @@ import { useCourse } from '~/context/courseState';
 import { useLesson, useUpdateLesson } from '~/context/lesson';
 import { get, post } from '~/database';
 import { handleAssignmentXLSX, handleInteractionAssignmentXLSX } from '~/utils/handleAssignment';
-import { toastError } from '~/utils/toasty';
+import { toastError, toastSuccess } from '~/utils/toasty';
 
 const renDefaultLesson = () => ({
     id: Date.now(),
@@ -34,6 +34,8 @@ function EditCourse() {
             updateCategory: state.updateCategory,
         }),
     );
+    const clearLessons = useLesson.getState().clearLessons;
+    const clearCourse = useCourse.getState().clear;
     const { title, description, price, level, thumbnail, categoryId } = useCourse((state) => state.course);
 
     console.log({ title, description, price, level, thumbnail, categoryId });
@@ -49,15 +51,17 @@ function EditCourse() {
                 const data = resCourse.data.course;
                 updateTitle(data?.title);
                 updateCategory(data?.category);
-                updatePrice(data?.price);
+                updatePrice(data?.price || 0);
                 updateDescription(data?.description);
                 updateLevel(data?.level);
                 updateThumbnail(data?.image);
             }
+            console.log(price);
+
             const titleLesson = await get('/lesson/lessons/' + id);
             titleLesson?.data && setLessonsTitle(titleLesson.data);
         })();
-    }, [id]);
+    }, [id, JSON.stringify(lessons)]);
 
     const handleSubmit = async () => {
         try {
@@ -100,10 +104,31 @@ function EditCourse() {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-            console.log(courseUpdate);
+            if (courseUpdate?.status !== 'ok') {
+                toastError('Đã xảy ra lỗi vui lòng điền đủ thông tin');
+                return;
+            }
+            const res = await Promise.all(listPromise);
+            console.log(res);
 
-            console.log(await Promise.all(listPromise));
+            if (Array.isArray(res)) {
+                for (let index = 0; index < res.length; index++) {
+                    if (res[index].status === 403) {
+                        toastError(res[index].response.data.message + '. Vị trí ' + (index + 1));
+                        return;
+                    }
+                    if (res[index].status === 500) {
+                        toastError('Kiễm tra lại thông tin');
+                        return;
+                    }
+                }
+            }
+
+            toastSuccess('Cập nhật thành công');
+            setLessons([]);
         } catch (error) {
+            console.log(error);
+
             toastError('Đã xãy ra lỗi');
         }
     };

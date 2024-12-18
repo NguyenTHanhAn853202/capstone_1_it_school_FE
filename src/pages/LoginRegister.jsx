@@ -28,11 +28,7 @@ function LoginRegister({ setEnjoin, enjoin }) {
 
                     <div className={cx(isRun ? 'move-left' : 'reset', 'absolute w-1/2 top-0 right-0')}>
                         {!isRun ? (
-                            <div
-                                className={cx(
-                                    'absolute h-full w-full flex items-center justify-center',
-                                )}
-                            >
+                            <div className={cx('absolute h-full w-full flex items-center justify-center')}>
                                 <div>
                                     <h2 className="text-center text-white">Chào mừng bạn đến với ITSchool</h2>
                                     <p className="w-[80%] text-white text-center font-light ml-auto mr-auto pt-3">
@@ -53,11 +49,7 @@ function LoginRegister({ setEnjoin, enjoin }) {
                                 </div>
                             </div>
                         ) : (
-                            <div
-                                className={cx(
-                                    'w-full absolute h-full  flex items-center justify-center',
-                                )}
-                            >
+                            <div className={cx('w-full absolute h-full  flex items-center justify-center')}>
                                 <div>
                                     <h2 className="text-center text-white">Chào mừng trở lại!</h2>
                                     <p className="w-[80%] text-center font-light ml-auto mr-auto pt-3 text-white">
