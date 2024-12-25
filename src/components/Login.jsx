@@ -36,7 +36,7 @@ function Login() {
                 localStorage.role = data.user.role;
                 navigate('/');
             }
-            response?.response?.data?.message && toastError('Đăng nhập thất bại vui lòng kiểm tra lại');
+            response?.response?.data?.message && toastError(response?.response?.data?.message);
         } catch (error) {
             console.log(error);
         } finally {

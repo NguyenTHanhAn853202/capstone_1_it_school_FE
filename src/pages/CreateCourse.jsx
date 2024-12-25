@@ -51,7 +51,6 @@ function CreateCourse() {
                 return;
             }
             const courseId = data.data._id;
-            console.log('lesson', lessons);
             if (lessons.length > 0) {
                 const listLesson = lessons.map((item) => ({ ...item }));
                 for (let index = 0; index < listLesson.length; index++) {

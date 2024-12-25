@@ -37,8 +37,9 @@ function Store() {
                 )}&title=${title}&sort=${sort}&limit=${limit}&currentPage=${currentPage}`,
             );
             if (response.status === 'ok') {
-                setCourses(response.data.courses || []);
-                setNumberPage(response.data.numberPage * 10);
+
+                setCourses(response.data?.courses ? response.data?.courses : []);
+                setNumberPage(response.data.numberPage ? response.data.numberPage * 10 : 10);
             }
         })();
     }, [JSON.stringify(level), JSON.stringify(filterCategory), title, sort, currentPage]);
@@ -149,7 +150,7 @@ function Store() {
             </div>
             <Flex className="mt-4" wrap gap="middle" justify="left">
                 {courses.map((item, index) => (
-                    <CourseStore key={index + item.star} data={item} />
+                    <CourseStore key={index + item._id} data={item} />
                 ))}
             </Flex>
             {courses.length === 0 && <h1 className="mt-6 text-center">Không tìm thấy khóa học nào</h1>}

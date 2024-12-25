@@ -66,6 +66,17 @@ function CourseInfo() {
             console.log(lessons[0]);
             lessons[0]?._id ? navigate('/lesson/' + lessons[0]?._id) : toastInfo('Khóa học chưa có bài học nào');
         } else {
+            if (+courseInfo.price === 0) {
+                // backend implementing
+                const pay = await post('/payment/free/' + courseInfo._id);
+                if (pay.status === 'ok') {
+                    setIsEnroll(true);
+                    toastSuccess('Đăng ký thành công');
+                }
+                console.log(pay);
+
+                return;
+            }
             const response = await get(`/payment/vnpay?amount=${courseInfo.price}&bankOrder=${courseInfo._id}`);
             response.status === 'ok' && window.open(response.data.url, '_blank');
         }

@@ -24,6 +24,7 @@ function MyCourse() {
                     </div>
                 ))}
             </div>
+            {courses.length === 0 && <h1 className="text-center mt-2">Chưa đăng ký khóa học nào</h1>}
         </div>
     );
 }

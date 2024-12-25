@@ -13,6 +13,7 @@ import { ChatBotWidget } from 'chatbot-widget-ui';
 import SideBar from './Sidebar';
 import { post } from '~/database';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import formatMd from '~/utils/formatMd';
 const { Header, Sider, Content } = Layout;
 function LayoutPage({ children }) {
     const [collapsed, setCollapsed] = useState(false);
@@ -26,7 +27,7 @@ function LayoutPage({ children }) {
         const res = await post('/user/chatbot', {
             text: message,
         });
-        if (res.status === 'ok') return res.data;
+        if (res.status === 'ok') return formatMd(res.data);
         return 'Chưa tìm thấy câu trả lời phù hợp';
     };
     const navigate = useNavigate();

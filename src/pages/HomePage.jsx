@@ -1,4 +1,4 @@
-import { Button, Carousel, Descriptions } from 'antd';
+import { Button, Carousel, Descriptions, Spin } from 'antd';
 import slider1 from '~/public/media/images/home-slider1.png';
 import slider2 from '~/public/media/images/home-slider-2.png';
 import CardAd from '~/components/Card';
@@ -67,9 +67,6 @@ function HomePage() {
                     courses: popular.data,
                 },
             ]);
-            console.log(hot.data);
-
-            console.log(containAll);
         })();
     }, []);
     return (
@@ -89,6 +86,13 @@ function HomePage() {
                 </Carousel>
             </div>
             {containAll.map((item, index) => {
+                if (item.courses.length === 0 && index === 0)
+                    return (
+                        <div className="flex mt-3 justify-center">
+                            <Spin />
+                        </div>
+                    );
+                if (item.courses.length === 0) return <></>;
                 return (
                     <div key={index}>
                         <h1 className="font-bold text-12 mb-2">{item.title}</h1>
