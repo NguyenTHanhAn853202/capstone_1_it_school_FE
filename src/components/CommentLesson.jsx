@@ -29,7 +29,6 @@ function CommentLesson({}) {
         })();
     }, [lessonId]);
 
-
     const hanldeMoreComment = async () => {
         if (!showMore) {
             const response = await get(`/user/get-comments/${lessonId}?page=${page + 1}`);

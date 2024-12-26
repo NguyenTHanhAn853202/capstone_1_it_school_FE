@@ -98,6 +98,9 @@ function ChatDialog({ setMenu, groupId = '', setGroupId, setIsLoadData }) {
                 setIsLoadData((pre) => pre + 1);
             } else {
                 toastInfo('Bạn không còn là thành viên của nhóm');
+                setGroupId('');
+                setIsLoadData((pre) => pre + 1);
+                setMenu(false);
             }
         } catch (error) {
             console.log(error.message);

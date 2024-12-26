@@ -89,11 +89,18 @@ function Chat() {
     };
     const loadData = async () => {
         const response = await get('/study-group/list');
-        response.status === 'ok' && response.data.groups && setMyGroup(response.data.groups);
+        if (response.status === 'ok') {
+            if (response.data?.groups) {
+                setMyGroup(response.data.groups);
+            } else {
+                setMyGroup(response.data);
+            }
+        }
     };
     useEffect(() => {
+        console.log('loadData');
         loadData();
-    }, [isLoadData]);
+    }, [isLoadData, groupId]);
     console.log(myGroup);
 
     return (
@@ -219,7 +226,7 @@ function Chat() {
                     })}
                 </div>
             </div>
-            <ChatDialog setIsLoadData={setIsLoadData} groupId={groupId} setMenu={setMenuChat} />
+            <ChatDialog setIsLoadData={setIsLoadData} groupId={groupId} setGroupId={setGroupId} setMenu={setMenuChat} />
             {menuChat &&
                 (menuChat == 1 ? (
                     <MenuChat setMenu={setMenuChat} setMyGroup={setMyGroup} groupId={groupId} setGroupId={setGroupId} />
