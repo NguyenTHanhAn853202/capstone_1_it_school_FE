@@ -54,7 +54,7 @@ function VideoCard({ to, title, view, image, time, id, videoUrl }) {
             <div className="flex-1">
                 <h2 className="font-bold">{title}</h2>
                 <p className="opacity-50 text-[0.9rem]">{timer}</p>
-                <p className="opacity-50 text-[0.9rem]">{view} Bình luận</p>
+                {/* <p className="opacity-50 text-[0.9rem]">{view} Bình luận</p> */}
             </div>
         </Link>
     );
