@@ -6,7 +6,11 @@ export const courseValidation = yup.object({
         .string()
         .min(10, 'Mô tả phải chứa ít nhất 10 ký tự')
         .required('Mô tả khóa học không được để trống'),
-    price: yup.number().min(0, 'Giá khóa học phải lớn hơn hoặc bằng 0').required('Giá khóa học không được để'),
+    price: yup
+        .number()
+        .typeError('Giá phải là một số hợp lệ')
+        .min(0, 'Giá khóa học phải lớn hơn hoặc bằng 0')
+        .required('Giá khóa học không được để'),
     categoryId: yup.string().required('Vui lòng chọn loại khóa học'),
     level: yup.string().required('Vui lòng nhập mức độ của khóa học'),
     thumbnail: yup

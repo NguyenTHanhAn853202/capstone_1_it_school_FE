@@ -91,10 +91,13 @@ function CreateCourse() {
                 });
                 if (listErr.length === 0) {
                     toastSuccess('Xử lý thành công');
-                } else toastError('Đã xãy ra lỗi ở bài: ' + listErr.join(', '));
+                    clearLessons();
+                    clearCourse();
+                } else {
+                    const response = await post('/course/delete-course/' + courseId);
+                    toastError('Đã xãy ra lỗi ở bài: ' + listErr.join(', '));
+                }
             }
-            clearLessons();
-            clearCourse();
         } catch (error) {
             console.log(error.message);
             toastError(error.message);
