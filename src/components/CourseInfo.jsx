@@ -103,7 +103,7 @@ function CourseInfo() {
 
     return (
         <>
-            <h1 className="text-center font-bold text-normal mb-5">Thôn tin khóa học</h1>
+            <h1 className="text-center font-bold text-normal mb-5">Thông tin khóa học</h1>
             <div className="flex justify-between gap-4">
                 <div className="w-[55%] space-y-2">
                     <div className="flex gap-2 items-center">
