@@ -42,15 +42,19 @@ function SideBar() {
                     </li>
                 ))}
             </ul>
-            <div className="flex justify-center mt-5">
-                <span className="block w-[90%] h-[2px] bg-ip_dark"></span>
-            </div>
-            <div className="pl-[20px] pr-[10px] flex mt-1">
-                <button className="py-[10px] px-[5px] hover:bg-mark hover:opacity-60 rounded-xl w-full text-[1.1rem] font-bold flex items-center gap-1">
-                    <IoLogInOutline className="text-[1.4rem]" />
-                    <button onClick={handleLogout}>Logout</button>
-                </button>
-            </div>
+            {localStorage.profileId && (
+                <>
+                    <div className="flex justify-center mt-5">
+                        <span className="block w-[90%] h-[2px] bg-ip_dark"></span>
+                    </div>
+                    <div className="pl-[20px] pr-[10px] flex mt-1">
+                        <button className="py-[10px] px-[5px] hover:bg-mark hover:opacity-60 rounded-xl w-full text-[1.1rem] font-bold flex items-center gap-1">
+                            <IoLogInOutline className="text-[1.4rem]" />
+                            <button onClick={handleLogout}>Logout</button>
+                        </button>
+                    </div>
+                </>
+            )}
         </nav>
     );
 }
