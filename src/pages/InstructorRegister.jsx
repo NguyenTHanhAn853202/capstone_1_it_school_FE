@@ -42,6 +42,7 @@ function InstructorRegister({ setInstructor }) {
             });
             if (image.length === 0) {
                 toastInfo('Vui lòng chọn hình ảnh bằng chứng');
+                return;
             }
             const formData = new FormData();
             formData.append('email', value.email);
@@ -120,7 +121,7 @@ function InstructorRegister({ setInstructor }) {
                         <label>
                             <span className="block">Ngày sinh</span>
                             <InputDateTime
-                                width={"100px"}
+                                width={'100px'}
                                 startDate={startDate}
                                 setStartDate={setStartDate}
                                 placeholder="Nhập ngày sinh"

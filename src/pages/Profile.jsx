@@ -51,9 +51,8 @@ function Profile() {
 
             if (response?.status === 'ok') {
                 localStorage.avatar = response.data.avatar;
-                setAvatar(URL.createObjectURL(avatar));
-
                 toastSuccess(response.message);
+                setAvatar(URL.createObjectURL(avatar));
             }
         } catch (error) {}
     };

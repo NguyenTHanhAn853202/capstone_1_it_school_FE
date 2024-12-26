@@ -20,10 +20,6 @@ const listTabs = [
         key: 1,
         label: 'Tất cả',
     },
-    {
-        key: 2,
-        label: 'Nhóm',
-    },
 ];
 
 function Chat() {

@@ -5,8 +5,11 @@ import loading from '~/public/media/loading/loading.gif';
 import { Link } from 'react-router-dom';
 import ImageCustom from './ImageCustom';
 import { pathname } from '~/routes/pathname';
+import timeAgo from '~/utils/timeAgo';
 
-function PostCard({ image, username, avatar, title, description, id }) {
+function PostCard({ image, username, avatar, title, description, id, createdAt }) {
+    const time = timeAgo(createdAt);
+
     return (
         <div className="p-2 border border-silver rounded-lg">
             <div className="flex justify-between">
@@ -31,7 +34,7 @@ function PostCard({ image, username, avatar, title, description, id }) {
                     </Link>
                     <p className="line-clamp-2" dangerouslySetInnerHTML={{ __html: description || '' }}></p>
 
-                    <span className="mt-1 block opacity-70">1 thang truoc</span>
+                    <span className="mt-1 block opacity-70">{time}</span>
                 </div>
             </div>
         </div>

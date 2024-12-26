@@ -158,7 +158,7 @@ function ChatDialog({ setMenu, groupId = '', setGroupId, setIsLoadData }) {
                             <Avatar src={PATH_MEDIA + group?.avatar} size={40} />
                             <div>
                                 <h2 className="font-bold truncate">{group?.groupName}</h2>
-                                <p className="opacity-80">{group?.members?.length} Thành viên</p>
+                                {/* <p className="opacity-80">{group?.members?.length} Thành viên</p> */}
                             </div>
                         </div>
                         <div className="flex space-x-2 pr-1">
@@ -269,7 +269,7 @@ function ChatDialog({ setMenu, groupId = '', setGroupId, setIsLoadData }) {
                                                     className="!w-[200px] !block !object-cover !h-[130px]"
                                                 />
                                             )}
-                                            {['word', 'excel', 'file'].includes(item.type) && (
+                                            {['word', 'excel', 'file', 'pdf'].includes(item.type) && (
                                                 <a href={PATH_MEDIA + item.content} target="_blank" className="block">
                                                     Download file
                                                 </a>

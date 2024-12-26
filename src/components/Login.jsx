@@ -67,7 +67,9 @@ function Login() {
                             <input type="checkbox" className="m-0 scale-[120%] hover:cursor-pointer" />
                             <p className="text-black m-0 text-[0.9rem] pl-1 inline-block">Nhớ mật khẩu</p>
                         </div>
-                        <Link className="text-black m-0 text-[0.9rem]">Quên mật khẩu?</Link>
+                        <Link to={'/forgot-password'} className="text-black m-0 text-[0.9rem]">
+                            Quên mật khẩu?
+                        </Link>
                     </div>
                     <div className="flex justify-center">
                         <Button styles="font-light text-[1rem] h-[35px] w-[190px] bg-button_green py-[5px] mt-[10px] ">

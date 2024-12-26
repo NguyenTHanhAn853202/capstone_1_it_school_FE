@@ -273,12 +273,15 @@ function CourseManagement() {
                 handleOk={handleDeleteCourses}
                 confirmLoading={confirmLoadings}
             />
-            <h1>Danh sách khóa học</h1>
+            <h1 className="text-[1.4rem] font-medium">Danh sách khóa học</h1>
             <Flex gap="middle" className="my-3">
-                <Button onClick={handleShowDialoglist} styles="!text-10 !w-[80px] !py-0 !h-[30px]">
+                <Button onClick={handleShowDialoglist} styles=" !w-[80px] font-thin !text-10  !py-0 !h-[30px]">
                     Xóa
                 </Button>
-                <Link to={pathname.CREATECOURSE} className="bg-button_green text-white px-2 leading-[30px] rounded-2xl">
+                <Link
+                    to={pathname.CREATECOURSE}
+                    className="bg-button_green text-10 text-white px-2 leading-[30px] rounded-2xl"
+                >
                     Thêm khóa học
                 </Link>
             </Flex>

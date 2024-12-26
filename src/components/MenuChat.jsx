@@ -29,12 +29,10 @@ function MenuChat({ setMenu, groupId, setGroupId, setMyGroup }) {
         await navigator.clipboard.writeText('http://localhost:8000/api/study-group/join/' + groupId);
     };
     const handleRemoveMember = async (memberId) => {
-        console.log(idRemove);
-
         try {
             setRemoveMember({ ...removeMember, loading: true });
             const data = await post('/study-group/remove-profile-group', {
-                removeIdMembersId: [memberId],
+                removeIdMembersId: [idRemove],
                 groupChatId: groupId,
             });
             console.log(data);
@@ -124,7 +122,7 @@ function MenuChat({ setMenu, groupId, setGroupId, setMyGroup }) {
                         <span>
                             <MdOutlinePeople size="1.5rem" />
                         </span>
-                        <p>{infoGroup?.groupChat.members.length} thành viên</p>
+                        <p>{members.length} thành viên</p>
                     </div>
                 </div>
             </div>

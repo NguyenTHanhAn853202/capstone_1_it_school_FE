@@ -16,6 +16,7 @@ function VerifyCodeSuccesfully() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         setLoading(true);
         if (password !== confirmPassword) {
             setError('Mật khẩu xác nhận không khớp!');
@@ -29,6 +30,7 @@ function VerifyCodeSuccesfully() {
                 toastSuccess(response.message);
                 navigate(pathname.EXPERIENCE);
             }
+
             response?.response?.data?.message && toastError(response?.response?.data?.message);
         } catch (error) {
             toastError(error.message);

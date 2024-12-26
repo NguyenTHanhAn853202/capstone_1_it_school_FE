@@ -32,8 +32,6 @@ function CourseInformation() {
         })();
     }, [id, pageNumber]);
 
-    console.log(comments, hasMore);
-
     const handleSubmitComment = async () => {
         try {
             const value = await rateValidation.validate({ rate: starNumber, comment: textComment, courseId: id });
@@ -51,7 +49,8 @@ function CourseInformation() {
                 setStarNumber(0);
                 toastSuccess('Tạo đánh giá thành công');
             }
-            response?.response?.data && toastError('Đã xãy ra lỗi vui lòng thử lại');
+
+            response?.response?.data && toastError(response.response.data.message);
         } catch (error) {
             toastError(error.message);
         }

@@ -87,13 +87,13 @@ function DetailLesson() {
     };
 
     useEffect(() => {
-        if (count > 1) {
+        if (count > 3) {
             console.log('stop di e');
             toastInfo('Tập trụng học nha.');
             const speak = new SpeechSynthesisUtterance('warning');
             window.speechSynthesis.speak(speak);
             videoRef.current.pause();
-            setCount(0);
+            setCount(-1);
         }
     }, [count]);
 
@@ -133,7 +133,9 @@ function DetailLesson() {
     console.log(quiz);
 
     useEffect(() => {
-        if (lastTime > countAPI * 5) {
+        console.log(lastTime, countAPI * 3);
+
+        if (lastTime > countAPI * 3) {
             captureAndSend();
             setCountAPI(countAPI + 1);
         }
@@ -182,7 +184,7 @@ function DetailLesson() {
     const handleOnPause = async () => {
         console.log('pause');
         setCount(0);
-        setCountAPI(0);
+        // setCountAPI(0);
     };
 
     return (

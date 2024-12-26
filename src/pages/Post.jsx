@@ -49,7 +49,7 @@ function Post() {
         }
     };
 
-    console.log(posts.length);
+    console.log(posts);
 
     return (
         <div>
@@ -73,6 +73,7 @@ function Post() {
                             description={item.content}
                             image={item.imageUrl}
                             title={item.title}
+                            createdAt={item.createdAt}
                         />
                     ))}
                     {totalPages > 1 && (

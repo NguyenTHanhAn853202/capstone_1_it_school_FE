@@ -21,14 +21,18 @@ function CourseInfo() {
     const [totalLessons, setTotalLessons] = useState(0);
     const [isEnroll, setIsEnroll] = useState(false);
     const navigate = useNavigate();
-
     useEffect(() => {
-        socket.on(`payment-${localStorage.profileId}`, (data) => {
+        const event = `payment-${localStorage.profileId}`;
+        const handlePayment = (data) => {
             if (data.code === 100) {
-                toastSuccess('Thanh Toán thành công');
+                // toastSuccess('Thanh Toán thành công');
                 setIsEnroll(true);
             }
-        });
+        };
+        socket.on(event, handlePayment);
+        return () => {
+            socket.off(event, handlePayment);
+        };
     }, []);
 
     useEffect(() => {

@@ -27,10 +27,10 @@ const CourseManagement = React.lazy(() => import('~/pages/CourseManagement'));
 export const publicPath = [
     { pathname: pathname.HOME, Element: HomePage },
     { pathname: pathname.EXPERIENCE, Element: Lading, noLayout: true },
-    { pathname: pathname.FORGOT_PASSWORD, Element: ForgotPassword },
-    { pathname: pathname.VERIFY_CODE, Element: VerifyCode },
+    { pathname: pathname.FORGOT_PASSWORD, Element: ForgotPassword, noLayout: true },
+    { pathname: pathname.VERIFY_CODE, Element: VerifyCode, noLayout: true },
     { pathname: pathname.PROFILE, Element: Profile },
-    { pathname: pathname.VERIFY_CODE_SUCCESFULLY, Element: VerifyCodeSeccesfully },
+    { pathname: pathname.VERIFY_CODE_SUCCESFULLY, Element: VerifyCodeSeccesfully, noLayout: true },
     { pathname: pathname.CHANGE_PASSWORD, Element: ChangePassowrd, noLayout: true },
     { pathname: pathname.UPLOADQUESTION, Element: UploadQuestion },
     { pathname: pathname.COURSEINFORMATION + '/:id', Element: CourseInformation },
