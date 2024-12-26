@@ -8,6 +8,9 @@ import Dialog from '~/components/Dialog';
 import { get, post } from '~/database';
 import { PATH_MEDIA } from '~/utils/secret';
 import { toastSuccess } from '~/utils/toasty';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
+dayjs.extend(customParseFormat);
 
 function AcceptInstructor() {
     const [open, setOpen] = useState(false);
@@ -24,7 +27,7 @@ function AcceptInstructor() {
                     email: item.email,
                     fullName: item.fullName,
                     phoneNumber: item.phoneNumber,
-                    dateOfBirth: dayjs(new Date(item.dateOfBirth)).format('DD/MM/YYYY'), // Chỉ lấy ngày
+                    dateOfBirth: item.dateOfBirth, // Chỉ lấy ngày
                     cccd: item.cccd,
                     degreeCertificates: item.degreeCertificates, // Dữ nguyên danh sách ảnh
                     expertiseAreas: item.expertiseAreas,
