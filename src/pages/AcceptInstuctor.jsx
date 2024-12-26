@@ -1,4 +1,4 @@
-import { Image, Table, Tooltip } from 'antd';
+import { Image, Spin, Table, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { CiEdit } from 'react-icons/ci';
@@ -14,6 +14,7 @@ function AcceptInstructor() {
     const [loading, setLoading] = useState(false);
     const [info, setInfo] = useState();
     const [dataSource, setDataSource] = useState([]);
+    const [loadingAccepter, setLoadingAccepter] = useState(false);
     const loadData = async () => {
         try {
             const res = await get('/in-re/get-in-re');
@@ -57,7 +58,7 @@ function AcceptInstructor() {
     };
     const handleAccept = async (record) => {
         try {
-            console.log(record);
+            setLoadingAccepter(true);
 
             const res = await post('/in-re/accept', {
                 _id: record.id,
@@ -70,6 +71,7 @@ function AcceptInstructor() {
                 toastSuccess('Thành công');
                 loadData();
             }
+            setLoadingAccepter(false);
         } catch (error) {}
     };
     const columns = [
@@ -155,7 +157,7 @@ function AcceptInstructor() {
     }, []);
 
     return (
-        <div>
+        <div className="relative">
             <Dialog
                 title={'Xóa'}
                 content={'Bạn có chắc chắn muốn xóa'}
@@ -164,6 +166,11 @@ function AcceptInstructor() {
                 confirmLoading={loading}
                 setOpen={setOpen}
             />
+            {loadingAccepter && (
+                <div className="absolute z-50 m-auto h-[calc(100vh-300px)] w-full flex justify-center items-center">
+                    <Spin />
+                </div>
+            )}
             <Table
                 columns={columns}
                 dataSource={dataSource}

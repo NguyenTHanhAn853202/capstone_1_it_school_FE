@@ -1,3 +1,4 @@
+import { Spin } from 'antd';
 import { useEffect, useId, useState } from 'react';
 import Button from '~/components/Button';
 import Container from '~/components/Container';
@@ -16,6 +17,7 @@ function CreateCourse() {
     const lessons = useLesson((state) => state.lessons);
     const clearLessons = useLesson.getState().clearLessons;
     const clearCourse = useCourse.getState().clear;
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         clearCourse();
@@ -24,6 +26,7 @@ function CreateCourse() {
 
     const handlSubmitCourse = async () => {
         try {
+            setLoading(true);
             const formData = new FormData();
 
             const validCourse = await courseValidation.validate({
@@ -102,6 +105,7 @@ function CreateCourse() {
             console.log(error.message);
             toastError(error.message);
         } finally {
+            setLoading(false);
             console.log(course);
         }
     };
@@ -116,7 +120,7 @@ function CreateCourse() {
             </ContainerLesson>
             <div className="flex justify-end mt-5 pr-5">
                 <Button styles="py-2 w-[150px]" onClick={handlSubmitCourse}>
-                    Đăng
+                    {loading ? <Spin /> : 'Đăng'}
                 </Button>
             </div>
         </Container>
