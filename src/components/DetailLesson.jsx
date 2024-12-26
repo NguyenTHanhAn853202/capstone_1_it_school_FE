@@ -87,7 +87,7 @@ function DetailLesson() {
     };
 
     useEffect(() => {
-        if (count > 3) {
+        if (count > 2) {
             console.log('stop di e');
             toastInfo('Tập trụng học nha.');
             const speak = new SpeechSynthesisUtterance('warning');
